@@ -1110,6 +1110,24 @@ REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
           keywords: ['pizza', 'pizzaria', 'pizzeria', 'massa', 'italiana', 'napolitana'],
           path: '/modelos/pizza/index.html',
           name: 'Pizzaria Premium'
+        },
+        {
+          id: 'clinica',
+          keywords: ['clínica médica', 'clinica medica', 'médico', 'hospital', 'saúde', 'doctor'],
+          path: '/modelos/clinica medica/index.html',
+          name: 'Clínica Médica'
+        },
+        {
+          id: 'cosmeticos',
+          keywords: ['cosméticos', 'cosmeticos', 'beleza', 'maquiagem', 'feminino', 'skincare'],
+          path: '/modelos/cosmeticos femininos/index.html',
+          name: 'Cosméticos Premium'
+        },
+        {
+          id: 'dentista',
+          keywords: ['clínica odontológica', 'clinica odontologica', 'dentista', 'dente', 'odontologia'],
+          path: '/modelos/clinica dentista/index.html',
+          name: 'Clínica Odontológica'
         }
       ];
 
