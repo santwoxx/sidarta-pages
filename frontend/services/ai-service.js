@@ -5,7 +5,7 @@
 
 class AIService {
   constructor() {
-    this.backendUrl = window.BACKEND_URL || 'http://localhost:5000';
+    this.backendUrl = (typeof window !== 'undefined' && window.BACKEND_URL) ? window.BACKEND_URL : '';
     this.useBackend = true;
     this.keys = {
       openai: '',
@@ -19,6 +19,39 @@ class AIService {
   // Carrega as configurações (com suporte a chrome.storage ou localStorage)
   async init() {
     return new Promise((resolve) => {
+      // 1. Tentar ler do localStorage (Web Environment)
+      if (typeof localStorage !== 'undefined') {
+        const sidartaKeys = localStorage.getItem('sidarta_ai_keys');
+        if (sidartaKeys) {
+          try {
+            const parsed = JSON.parse(sidartaKeys);
+            if (parsed.provider) this.defaultProvider = parsed.provider;
+            if (parsed.gemini) this.keys.gemini = parsed.gemini;
+            if (parsed.openai) this.keys.openai = parsed.openai;
+            if (parsed.anthropic) this.keys.anthropic = parsed.anthropic;
+            if (parsed.backendUrl) this.backendUrl = parsed.backendUrl;
+          } catch (e) {}
+        }
+
+        const storedKeys = localStorage.getItem('aiKeys');
+        if (storedKeys) {
+          try {
+            const parsed = JSON.parse(storedKeys);
+            this.keys = { ...this.keys, ...parsed };
+          } catch (e) {}
+        }
+
+        const storedProvider = localStorage.getItem('aiDefaultProvider');
+        if (storedProvider) this.defaultProvider = storedProvider;
+
+        const storedModel = localStorage.getItem('aiDefaultModel');
+        if (storedModel) this.defaultModel = storedModel;
+
+        const storedBackendUrl = localStorage.getItem('backendUrl');
+        if (storedBackendUrl) this.backendUrl = storedBackendUrl;
+      }
+
+      // 2. Tentar ler do chrome.storage.local (Extension Environment)
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
         chrome.storage.local.get(['aiKeys', 'aiDefaultProvider', 'aiDefaultModel', 'backendUrl'], (result) => {
           if (result.aiKeys) this.keys = { ...this.keys, ...result.aiKeys };
@@ -27,17 +60,6 @@ class AIService {
           if (result.backendUrl) this.backendUrl = result.backendUrl;
           resolve();
         });
-      } else if (typeof localStorage !== 'undefined') {
-        const storedKeys = localStorage.getItem('aiKeys');
-        const storedProvider = localStorage.getItem('aiDefaultProvider');
-        const storedModel = localStorage.getItem('aiDefaultModel');
-        const storedBackendUrl = localStorage.getItem('backendUrl');
-
-        if (storedKeys) this.keys = JSON.parse(storedKeys);
-        if (storedProvider) this.defaultProvider = storedProvider;
-        if (storedModel) this.defaultModel = storedModel;
-        if (storedBackendUrl) this.backendUrl = storedBackendUrl;
-        resolve();
       } else {
         resolve();
       }
@@ -48,7 +70,17 @@ class AIService {
     this.keys = keys;
     this.defaultProvider = provider;
     this.defaultModel = model;
-    if (backendUrl) this.backendUrl = backendUrl;
+    if (backendUrl !== undefined) this.backendUrl = backendUrl;
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('sidarta_ai_keys', JSON.stringify({
+        provider: this.defaultProvider,
+        gemini: this.keys.gemini,
+        openai: this.keys.openai,
+        anthropic: this.keys.anthropic,
+        backendUrl: this.backendUrl
+      }));
+    }
 
     return new Promise((resolve) => {
       if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
@@ -58,12 +90,6 @@ class AIService {
           aiDefaultModel: this.defaultModel,
           backendUrl: this.backendUrl
         }, resolve);
-      } else if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('aiKeys', JSON.stringify(this.keys));
-        localStorage.setItem('aiDefaultProvider', this.defaultProvider);
-        localStorage.setItem('aiDefaultModel', this.defaultModel);
-        localStorage.setItem('backendUrl', this.backendUrl);
-        resolve();
       } else {
         resolve();
       }
@@ -71,13 +97,24 @@ class AIService {
   }
 
   /**
-   * Envia o prompt para a IA (Tenta primeiramente via Backend Render, com fallback para Direct Browser Calls se houver API key configurada no cliente)
+   * Envia o prompt para a IA (Tenta primeiramente via Backend Render se configurado, com fallback para Direct Browser Calls)
    */
   async generateCompletion(prompt, systemPrompt = '') {
-    // 1. Tentar chamada via Backend Render se habilitado
-    if (this.useBackend && this.backendUrl) {
+    await this.init();
+
+    const isLocalhostHost = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+    // Definir URL do backend se estiver rodando localmente e nada foi definido
+    let targetBackend = this.backendUrl;
+    if (!targetBackend && isLocalhostHost) {
+      targetBackend = 'http://localhost:5000';
+    }
+
+    // 1. Tentar chamada via Backend (Render / Local) apenas se houver uma URL de backend válida
+    if (this.useBackend && targetBackend) {
       try {
-        const response = await fetch(`${this.backendUrl}/api/ai/generate`, {
+        const response = await fetch(`${targetBackend}/api/ai/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -93,13 +130,14 @@ class AIService {
           if (data.result) return data.result;
         }
       } catch (backendError) {
-        console.warn('Backend Render indisponível ou em fallback. Tentando chamadas diretas:', backendError);
+        console.warn('Backend Render não respondeu. Alternando para chamada direta de IA:', backendError);
       }
     }
 
     // 2. Fallback: Chamada direta no browser caso haja chave configurada
-    if (!this.keys[this.defaultProvider]) {
-      throw new Error(`Chave de API não configurada para ${this.defaultProvider} e Backend indisponível.`);
+    const currentKey = this.keys[this.defaultProvider];
+    if (!currentKey) {
+      throw new Error(`Chave de API não configurada para o provedor: ${this.defaultProvider}. Por favor, insira sua chave em Configurações.`);
     }
 
     if (this.defaultProvider === 'openai') {
