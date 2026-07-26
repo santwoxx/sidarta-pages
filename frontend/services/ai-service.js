@@ -13,7 +13,7 @@ class AIService {
       gemini: ''
     };
     this.defaultProvider = 'gemini'; // 'openai', 'anthropic', 'gemini'
-    this.defaultModel = 'gemini-1.5-flash';
+    this.defaultModel = 'gemini-1.5-flash-latest';
   }
 
   // Carrega as configurações (com suporte a chrome.storage ou localStorage)
@@ -69,7 +69,7 @@ class AIService {
   async saveConfig(keys, provider, model, backendUrl) {
     this.keys = keys;
     this.defaultProvider = provider;
-    this.defaultModel = model;
+    if (model) this.defaultModel = model;
     if (backendUrl !== undefined) this.backendUrl = backendUrl;
 
     if (typeof localStorage !== 'undefined') {
@@ -105,8 +105,12 @@ class AIService {
     const isLocalhostHost = typeof window !== 'undefined' && 
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-    // Definir URL do backend se estiver rodando localmente e nada foi definido
-    let targetBackend = this.backendUrl;
+    // Validar URL do backend (deve ser uma URL válida http:// ou https://)
+    let targetBackend = this.backendUrl ? this.backendUrl.trim() : '';
+    if (targetBackend && !targetBackend.startsWith('http://') && !targetBackend.startsWith('https://')) {
+      targetBackend = '';
+    }
+
     if (!targetBackend && isLocalhostHost) {
       targetBackend = 'http://localhost:5000';
     }
@@ -137,7 +141,7 @@ class AIService {
     // 2. Fallback: Chamada direta no browser caso haja chave configurada
     const currentKey = this.keys[this.defaultProvider];
     if (!currentKey) {
-      throw new Error(`Chave de API não configurada para o provedor: ${this.defaultProvider}. Por favor, insira sua chave em Configurações.`);
+      throw new Error(`Chave de API não configurada para o provedor: ${this.defaultProvider}. Por favor, insira sua chave em Configurações no Painel Admin.`);
     }
 
     if (this.defaultProvider === 'openai') {
@@ -199,28 +203,49 @@ class AIService {
 
   async _callGemini(prompt, systemPrompt) {
     const apiKey = this.keys.gemini;
-    const model = this.defaultModel || 'gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    // Lista de modelos Gemini suportados em ordem de preferência
+    const modelsToTry = [
+      'gemini-1.5-flash-latest',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
+      'gemini-pro'
+    ];
 
-    const bodyData = {
-      contents: [{ parts: [{ text: prompt }] }]
-    };
-    if (systemPrompt) {
-      bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
+    let lastError = null;
+
+    for (const model of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+        const bodyData = {
+          contents: [{ parts: [{ text: prompt }] }]
+        };
+        if (systemPrompt) {
+          bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyData)
+        });
+
+        const data = await response.json();
+        if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+          return data.candidates[0].content.parts[0].text;
+        }
+
+        if (data.error) {
+          lastError = data.error.message || JSON.stringify(data.error);
+        }
+      } catch (err) {
+        lastError = err.message;
+      }
     }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey
-      },
-      body: JSON.stringify(bodyData)
-    });
-
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
-    return data.candidates[0].content.parts[0].text;
+    throw new Error(lastError || 'Não foi possível obter resposta do Google Gemini API. Verifique sua chave.');
   }
 }
 

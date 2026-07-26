@@ -93,28 +93,44 @@ app.post('/api/ai/generate', async (req, res) => {
         return res.status(500).json({ error: 'GEMINI_API_KEY não configurada no servidor.' });
       }
 
-      const selectedModel = model || 'gemini-1.5-flash';
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
+      const modelsToTry = [
+        model,
+        'gemini-1.5-flash-latest',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-pro'
+      ].filter(Boolean);
 
-      const bodyData = {
-        contents: [{ parts: [{ text: prompt }] }]
-      };
-      if (systemPrompt) {
-        bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
+      let lastError = null;
+      let resultText = '';
+
+      for (const mName of modelsToTry) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${mName}:generateContent?key=${apiKey}`;
+          const bodyData = { contents: [{ parts: [{ text: prompt }] }] };
+          if (systemPrompt) bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
+
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+          });
+
+          const data = await response.json();
+          if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+            resultText = data.candidates[0].content.parts[0].text;
+            break;
+          }
+          if (data.error) lastError = data.error.message;
+        } catch (e) {
+          lastError = e.message;
+        }
       }
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData)
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Erro na requisição Gemini');
+      if (!resultText) {
+        throw new Error(lastError || 'Erro na requisição Gemini API');
       }
 
-      const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
       return res.json({ result: resultText });
 
     } else {
