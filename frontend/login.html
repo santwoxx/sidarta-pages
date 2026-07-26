@@ -162,7 +162,7 @@
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
 
-      const isSuperAdmin = (user.email === 'brisasofc@gmail.com' || user.email === 'isaacbomfim.00@gmail.com');
+      const isSuperAdmin = (user.email === 'brisasofc@gmail.com' || user.email === 'isaacbomfim.00@gmail.com' || user.email === 'comercial@grupoarrezeb.com');
 
       if (!userSnap.exists()) {
         await setDoc(userRef, {

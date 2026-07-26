@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
     const userEmail = currentUser ? currentUser.email : (localUser.email || '');
 
-    const isMasterAdmin = (userEmail === 'brisasofc@gmail.com' || userEmail === 'isaacbomfim.00@gmail.com');
+    const isMasterAdmin = (userEmail === 'brisasofc@gmail.com' || userEmail === 'isaacbomfim.00@gmail.com' || userEmail === 'comercial@grupoarrezeb.com');
 
     if (currentUser) {
       const userRef = doc(db, 'users', currentUser.uid);
@@ -231,42 +231,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  // 4. Lógica de AI Keys (Salvar e Carregar)
-  const providerSelect = document.getElementById('provider');
+  // 4. Lógica de Configuração de Backend de IA (Salva APENAS URL e provider — NUNCA chaves)
+  const providerSelect  = document.getElementById('provider');
   const backendUrlInput = document.getElementById('backend-url');
-  const keyGemini = document.getElementById('key-gemini');
-  const keyOpenai = document.getElementById('key-openai');
-  const keyAnthropic = document.getElementById('key-anthropic');
-  const formAi = document.getElementById('ai-keys-form');
+  const formAi          = document.getElementById('ai-keys-form');
 
-  const savedKeys = JSON.parse(localStorage.getItem('sidarta_ai_keys') || '{}');
-  if (savedKeys.provider && providerSelect) providerSelect.value = savedKeys.provider;
-  if (savedKeys.backendUrl && backendUrlInput) backendUrlInput.value = savedKeys.backendUrl;
-  if (savedKeys.gemini && keyGemini) keyGemini.value = savedKeys.gemini;
-  if (savedKeys.openai && keyOpenai) keyOpenai.value = savedKeys.openai;
-  if (savedKeys.anthropic && keyAnthropic) keyAnthropic.value = savedKeys.anthropic;
+  // Carrega config salva (apenas URL + provider, nunca chaves)
+  const savedConfig = JSON.parse(localStorage.getItem('sidarta_ai_config') || '{}');
+  // Retrocompatibilidade: lê backendUrl do formato antigo se novo não existir
+  const legacyConfig = JSON.parse(localStorage.getItem('sidarta_ai_keys') || '{}');
+  const loadedBackendUrl = savedConfig.backendUrl || legacyConfig.backendUrl || '';
+  const loadedProvider   = savedConfig.provider   || legacyConfig.provider   || 'gemini';
+
+  if (providerSelect  && loadedProvider)   providerSelect.value   = loadedProvider;
+  if (backendUrlInput && loadedBackendUrl) backendUrlInput.value  = loadedBackendUrl;
+
+  // Remove qualquer chave de API que possa ter sido salva anteriormente por segurança
+  if (legacyConfig.gemini || legacyConfig.openai || legacyConfig.anthropic) {
+    delete legacyConfig.gemini;
+    delete legacyConfig.openai;
+    delete legacyConfig.anthropic;
+    localStorage.setItem('sidarta_ai_keys', JSON.stringify(legacyConfig));
+    console.info('[Admin] Chaves de API removidas do localStorage por segurança. Configure-as como variáveis de ambiente no Render.');
+  }
 
   if (formAi) {
     formAi.addEventListener('submit', (e) => {
       e.preventDefault();
-      const newKeys = {
-        provider: providerSelect ? providerSelect.value : 'gemini',
-        backendUrl: backendUrlInput ? backendUrlInput.value.trim() : '',
-        gemini: keyGemini ? keyGemini.value.trim() : '',
-        openai: keyOpenai ? keyOpenai.value.trim() : '',
-        anthropic: keyAnthropic ? keyAnthropic.value.trim() : ''
-      };
-      
-      localStorage.setItem('sidarta_ai_keys', JSON.stringify(newKeys));
+      const provider   = providerSelect  ? providerSelect.value.trim()  : 'gemini';
+      const backendUrl = backendUrlInput ? backendUrlInput.value.trim() : '';
+
+      // Salva APENAS configurações não-sensíveis
       if (window.aiService) {
-        window.aiService.saveConfig(
-          { gemini: newKeys.gemini, openai: newKeys.openai, anthropic: newKeys.anthropic },
-          newKeys.provider,
-          'gemini-1.5-flash-latest',
-          newKeys.backendUrl
-        );
+        window.aiService.saveConfig({ provider, backendUrl });
       }
-      showToast('Configurações salvas com sucesso!');
+      showToast('Configurações salvas! A chave de API deve estar nas variáveis de ambiente do Render.');
     });
   }
 });
