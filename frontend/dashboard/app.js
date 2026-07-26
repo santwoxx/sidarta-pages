@@ -147,10 +147,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const emailEl = document.getElementById('profile-email');
       const roleEl = document.getElementById('profile-role');
       const planEl = document.getElementById('profile-plan');
+      const btnAdminPanel = document.getElementById('btn-admin-panel');
       
       if (emailEl) emailEl.textContent = localUser.email || 'N/A';
       if (roleEl) roleEl.textContent = localUser.role || 'user';
       if (planEl) planEl.textContent = localUser.plan || (localUser.role === 'admin' ? 'Acesso Total (Admin)' : 'Nenhum');
+
+      if (btnAdminPanel) {
+        if (localUser.role === 'admin') {
+          btnAdminPanel.classList.remove('hidden');
+          btnAdminPanel.onclick = () => window.location.href = '../admin/index.html';
+        } else {
+          btnAdminPanel.classList.add('hidden');
+        }
+      }
     });
   }
 
