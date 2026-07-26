@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
     const userEmail = currentUser ? currentUser.email : (localUser.email || '');
 
-    const isMasterAdmin = (userEmail === 'brisasofc@gmail.com');
+    const isMasterAdmin = (userEmail === 'brisasofc@gmail.com' || userEmail === 'isaacbomfim.00@gmail.com');
 
     if (currentUser) {
       const userRef = doc(db, 'users', currentUser.uid);
@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (snap.exists()) {
         const uData = snap.data();
         if (!isMasterAdmin && uData.role !== 'admin') {
-          alert('Acesso negado: Apenas o Super Admin (brisasofc@gmail.com) tem permissão de gerenciar o sistema.');
+          alert('Acesso negado: Apenas o Administrador tem permissão de gerenciar o sistema.');
           window.location.href = '/dashboard/index.html';
           return false;
         }
       }
     } else if (!isMasterAdmin && localUser.role !== 'admin') {
-      alert('Acesso restrito ao Administrador. Faça login com brisasofc@gmail.com.');
+      alert('Acesso restrito ao Administrador. Faça login com uma conta de Administrador.');
       window.location.href = '/login.html';
       return false;
     }
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (hasAccess) initRealtimeUsers();
       } else {
         const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
-        if (localUser.email === 'brisasofc@gmail.com' || localUser.role === 'admin') {
+        if (localUser.email === 'brisasofc@gmail.com' || localUser.email === 'isaacbomfim.00@gmail.com' || localUser.role === 'admin') {
           initRealtimeUsers();
         } else {
           alert('Sessão expirada ou acesso restrito.');
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       usersTableBody.innerHTML = usersList.map(u => {
-        const isMaster = (u.email === 'brisasofc@gmail.com');
+        const isMaster = (u.email === 'brisasofc@gmail.com' || u.email === 'isaacbomfim.00@gmail.com');
         const isBlocked = u.status === 'blocked';
         const isAdmin = u.role === 'admin';
 
