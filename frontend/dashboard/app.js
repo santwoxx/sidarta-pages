@@ -1,8 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
+  if (!localUser.email) {
+    window.location.href = '/login.html';
+    return;
+  }
+
   if (localUser.status === 'blocked') {
     alert('Sua conta foi bloqueada pelo Administrador. Entre em contato com o suporte.');
     window.location.href = '/login.html';
+    return;
+  }
+
+  if (localUser.role !== 'admin' && !localUser.plan) {
+    window.location.href = '/pricing.html';
     return;
   }
 
@@ -52,6 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const navCreate = document.getElementById('nav-create');
   const navTools = document.getElementById('nav-tools');
   const toolsView = document.getElementById('tools-view');
+  const navProfile = document.getElementById('nav-profile');
+  const profileView = document.getElementById('profile-view');
   // --- Navegação Lateral ---
   if (navDashboard && navCreate) {
     navDashboard.addEventListener('click', (e) => {
@@ -59,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       navDashboard.classList.add('active');
       navCreate.classList.remove('active');
       if (navTools) navTools.classList.remove('active');
+      if (navProfile) navProfile.classList.remove('active');
       if (createView) createView.classList.add('hidden');
       switchView(mainView);
     });
@@ -68,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
       navCreate.classList.add('active');
       navDashboard.classList.remove('active');
       if (navTools) navTools.classList.remove('active');
-      [mainView, previewView, editorView, toolsView].forEach(v => { if(v) v.classList.add('hidden') });
+      if (navProfile) navProfile.classList.remove('active');
+      [mainView, previewView, editorView, toolsView, profileView].forEach(v => { if(v) v.classList.add('hidden') });
       if (createView) createView.classList.remove('hidden');
     });
   }
@@ -79,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       navTools.classList.add('active');
       if (navDashboard) navDashboard.classList.remove('active');
       if (navCreate) navCreate.classList.remove('active');
+      if (navProfile) navProfile.classList.remove('active');
       if (createView) createView.classList.add('hidden');
       switchView(toolsView);
       
@@ -118,6 +133,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (navProfile && profileView) {
+    navProfile.addEventListener('click', (e) => {
+      e.preventDefault();
+      navProfile.classList.add('active');
+      if (navDashboard) navDashboard.classList.remove('active');
+      if (navCreate) navCreate.classList.remove('active');
+      if (navTools) navTools.classList.remove('active');
+      if (createView) createView.classList.add('hidden');
+      switchView(profileView);
+
+      // Preencher dados
+      const emailEl = document.getElementById('profile-email');
+      const roleEl = document.getElementById('profile-role');
+      const planEl = document.getElementById('profile-plan');
+      
+      if (emailEl) emailEl.textContent = localUser.email || 'N/A';
+      if (roleEl) roleEl.textContent = localUser.role || 'user';
+      if (planEl) planEl.textContent = localUser.plan || (localUser.role === 'admin' ? 'Acesso Total (Admin)' : 'Nenhum');
+    });
+  }
+
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      try {
+        const { auth, signOut } = await import('../firebase-config.js');
+        await signOut(auth);
+      } catch (err) {
+        console.error("Erro ao deslogar do Firebase:", err);
+      }
+      localStorage.removeItem('sidarta_user');
+      window.location.href = '/login.html';
+    });
+  }
+
   const TEMPLATES = {
     pizza: { name: 'Pizzaria Premium', path: '../modelos/pizza/index.html' },
     clinica: { name: 'Clínica Médica', path: '../modelos/clinica medica/index.html' },
@@ -127,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── VIEW SWITCHING ───
   function switchView(view) {
-    [mainView, previewView, editorView, toolsView].forEach(v => { if(v) v.classList.add('hidden') });
+    [mainView, previewView, editorView, toolsView, profileView].forEach(v => { if(v) v.classList.add('hidden') });
     if (view) view.classList.remove('hidden');
   }
 

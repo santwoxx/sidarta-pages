@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolha seu Plano | Sidarta Pages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f111a;
+      --text-primary: #f8f9fa;
+      --text-secondary: #adb5bd;
+      --accent-color: #7c3aed;
+      --accent-gradient: linear-gradient(135deg, #7c3aed, #4db8ff);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% -20%, rgba(124, 58, 237, 0.15), transparent 50%);
+    }
+
+    .pricing-container {
+      width: 100%; max-width: 1000px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .pricing-header h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    
+    .pricing-header p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .plan-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .plan-name { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .plan-price { font-size: 36px; font-weight: 800; margin-bottom: 24px; }
+    .plan-price span { font-size: 16px; color: var(--text-secondary); font-weight: 500; }
+    
+    .plan-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 32px;
+      flex-grow: 1;
+    }
+    
+    .plan-features li {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .plan-features li svg { color: var(--accent-color); }
+
+    .btn-plan {
+      width: 100%; padding: 14px;
+      background: var(--accent-gradient);
+      color: white; border: none;
+      border-radius: 12px; font-weight: 600; font-size: 15px;
+      cursor: pointer; transition: var(--transition);
+    }
+
+    .btn-plan:hover { filter: brightness(1.1); }
+    
+    #loading-msg { color: var(--accent-color); margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="pricing-container">
+    <div class="pricing-header">
+      <h1>Escolha o plano ideal para você</h1>
+      <p>Desbloqueie todo o potencial do Método Sature Store e comece a criar sites incríveis.</p>
+    </div>
+
+    <div class="plans-grid">
+      <!-- PLAN 1 -->
+      <div class="plan-card">
+        <div class="plan-name">Grátis</div>
+        <div class="plan-price">R$ 0<span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Acesso Básico</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 Projeto Salvo</li>
+          <li style="opacity: 0.5;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Suporte Premium</li>
+        </ul>
+        <button class="btn-plan" onclick="selectPlan('gratis')">Começar Grátis</button>
+      </div>
+
+      <!-- PLAN 2 -->
+      <div class="plan-card" style="border-color: var(--accent-color); box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">R$ 49<span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Acesso Completo</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Projetos Ilimitados</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Modelos Premium</li>
+        </ul>
+        <button class="btn-plan" onclick="selectPlan('pro')">Assinar Pro</button>
+      </div>
+
+      <!-- PLAN 3 -->
+      <div class="plan-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">R$ 99<span>/mês</span></div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Tudo do Pro</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Suporte Prioritário</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Mentoria Mensal</li>
+        </ul>
+        <button class="btn-plan" onclick="selectPlan('premium')">Assinar Premium</button>
+      </div>
+    </div>
+    
+    <p id="loading-msg">Processando sua assinatura...</p>
+  </div>
+
+  <script type="module">
+    import { db, doc, updateDoc } from './firebase-config.js';
+
+    window.selectPlan = async function(planName) {
+      const localUser = JSON.parse(localStorage.getItem('sidarta_user'));
+      
+      if (!localUser || !localUser.uid) {
+        alert("Erro: Usuário não autenticado.");
+        window.location.href = '/login.html';
+        return;
+      }
+
+      document.getElementById('loading-msg').style.display = 'block';
+
+      try {
+        const userRef = doc(db, 'users', localUser.uid);
+        await updateDoc(userRef, { plan: planName });
+
+        localUser.plan = planName;
+        localStorage.setItem('sidarta_user', JSON.stringify(localUser));
+
+        window.location.href = '/dashboard/index.html';
+      } catch (err) {
+        console.error("Erro ao assinar plano:", err);
+        alert("Ocorreu um erro ao processar sua assinatura.");
+        document.getElementById('loading-msg').style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>

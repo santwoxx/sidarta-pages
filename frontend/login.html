@@ -189,8 +189,18 @@
         email: user.email,
         displayName: user.displayName || user.email.split('@')[0],
         role: isSuperAdmin ? 'admin' : (userSnap.exists() ? userSnap.data().role : 'user'),
-        status: userSnap.exists() ? userSnap.data().status : 'active'
+        status: userSnap.exists() ? userSnap.data().status : 'active',
+        plan: userSnap.exists() ? userSnap.data().plan : null
       }));
+    }
+
+    function redirectUser() {
+      const localUser = JSON.parse(localStorage.getItem('sidarta_user'));
+      if (localUser.role === 'admin' || localUser.plan) {
+        window.location.href = '/dashboard/index.html';
+      } else {
+        window.location.href = '/pricing.html';
+      }
     }
 
     // Login com Google
@@ -199,7 +209,7 @@
       try {
         const result = await signInWithPopup(auth, googleProvider);
         await syncUserToFirestore(result.user);
-        window.location.href = '/dashboard/index.html';
+        redirectUser();
       } catch (error) {
         console.error('Erro no Google Sign-In:', error);
         err.textContent = "Erro ao entrar com Google: " + error.message;
@@ -221,7 +231,7 @@
         // Tentar Firebase Auth
         const userCred = await signInWithEmailAndPassword(auth, email, pass);
         await syncUserToFirestore(userCred.user);
-        window.location.href = '/dashboard/index.html';
+        redirectUser();
       } catch (fbError) {
         // Fallback Supabase Auth
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -237,7 +247,7 @@
           if (data.user) {
             await syncUserToFirestore(data.user);
           }
-          window.location.href = '/dashboard/index.html';
+          redirectUser();
         }
       }
     });

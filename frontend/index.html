@@ -2,10 +2,151 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/dashboard/">
-  <title>Redirecionando...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Método Sature Store | Crie sites que vendem sozinhos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0a0a0a;
+      --bg-card: #111111;
+      --text-primary: #ffffff;
+      --text-secondary: #8e8e93;
+      --accent-color: #7c3aed;
+      --accent-hover: #6d28d9;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 5%;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .logo-accent { width: 12px; height: 12px; background: var(--accent-color); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--accent-color); }
+    
+    .nav-links a { color: var(--text-primary); text-decoration: none; margin-left: 24px; font-weight: 500; font-size: 15px; transition: var(--transition); }
+    .nav-links a:hover { color: var(--accent-color); }
+
+    .nav-buttons { display: flex; gap: 12px; }
+    .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; transition: var(--transition); border: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: white; }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); }
+    .btn-primary { background: var(--accent-color); color: white; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 5%;
+      text-align: center;
+      background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15), transparent 60%);
+      min-height: 80vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; max-width: 800px; }
+    .hero h1 span { color: var(--accent-color); }
+    .hero p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin-bottom: 40px; line-height: 1.5; }
+    
+    /* Features */
+    .features { padding: 80px 5%; background: var(--bg-card); }
+    .section-title { text-align: center; font-size: 32px; font-weight: 800; margin-bottom: 60px; }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      transition: var(--transition);
+    }
+    .feature-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
+    .feature-icon {
+      width: 48px; height: 48px;
+      background: rgba(124, 58, 237, 0.1);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+    .feature-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .feature-desc { color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
+
+    /* Footer */
+    footer { padding: 40px 5%; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; }
+  </style>
 </head>
 <body>
-  <p>Se você não for redirecionado, <a href="/dashboard/">clique aqui para acessar o Dashboard</a>.</p>
+
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-accent"></span> Sature Store
+    </div>
+    <div class="nav-links">
+      <a href="#recursos">Como Funciona</a>
+    </div>
+    <div class="nav-buttons">
+      <a href="/login.html" class="btn btn-outline">Fazer Login</a>
+      <a href="/register.html" class="btn btn-primary">Começar Agora</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>A plataforma definitiva para criar <span>Sites de Alta Conversão</span></h1>
+    <p>Utilize inteligência artificial avançada, modelos premium prontos e uma interface incrivelmente fácil para alavancar os seus projetos na web em minutos.</p>
+    <a href="/register.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 18px;">Criar minha conta</a>
+  </section>
+
+  <section class="features" id="recursos">
+    <h2 class="section-title">Como o sistema funciona?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        </div>
+        <h3 class="feature-title">1. Modelos Premium</h3>
+        <p class="feature-desc">Acesse nossa biblioteca exclusiva de modelos premium, de Clínicas a Restaurantes, prontos para editar e publicar.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <h3 class="feature-title">2. Assinatura Flexível</h3>
+        <p class="feature-desc">Faça o seu cadastro, escolha o plano que mais se adequa ao seu negócio (Grátis, Pro ou Premium) e desbloqueie as funcionalidades exclusivas.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </div>
+        <h3 class="feature-title">3. Edição via IA</h3>
+        <p class="feature-desc">Use o painel inteligente (Construtor) e as Skills de IA para gerar textos persuasivos, imagens e componentes automaticamente.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Método Sature Store. Todos os direitos reservados.
+  </footer>
+
 </body>
 </html>
