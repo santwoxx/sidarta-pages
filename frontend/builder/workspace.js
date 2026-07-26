@@ -37,21 +37,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       if (!window.aiService) throw new Error('Serviço de IA não carregado.');
       
-      const systemPrompt = `Você é um Engenheiro de Front-end Sênior e UI/UX Designer Mestre, especializado em criar sites de tirar o fôlego.
-Você deve agir aplicando TODAS as seguintes "Premium Skills": 
-- Site Premium Completo & Design Responsivo Perfeito
-- UI Redesign Moderno & Dark Mode Elegante
-- Glassmorphism & Efeitos Neon (quando aplicável)
-- Animações fluidas (em CSS Puro) e Micro-Interações
-- Tipografia Impecável & Acessibilidade
+      const systemPrompt = `Você é um Engenheiro de Front-end Sênior e UI/UX Designer Mestre, especializado em criar sites modernos e de alta conversão.
 
-Regras OBRIGATÓRIAS:
-1. Retorne APENAS o código HTML completo (CSS e JS embutidos) válido. NADA MAIS. Sem markdown.
-2. É ESTRITAMENTE PROIBIDO usar Scripts Externos (ex: CDN de JS do Tailwind, GSAP).
-3. Para Tailwind, use EXCLUSIVAMENTE via CSS: <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-4. Ícones: FontAwesome CSS ou SVG inline.
-5. Imagens: Imagens Unsplash de altíssima qualidade (ex: https://source.unsplash.com/random/1200x800/?fashion,luxury).
-6. Entregue a MAIOR QUALIDADE VISUAL POSSÍVEL. Sombras, contrastes, gradientes premium e layouts criativos.`;
+REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
+1. ADAPTE A PALETA DE CORES AO NICHO DO PROMPT:
+   - Para Petshop, Cachorros, Animais, Saúde ou Cuidados: Use design claro, acolhedor e minimalista com fundos claros (Branco/Cinza suave #f8fafc), azul limpo (#0284c7 / #38bdf8), verde (#10b981) e acentos amigáveis. NUNCA use fundo preto/dourado para petshop ou cachorros!
+   - Para Restaurante / Comida / Pizza: Use cores quentes (Vermelho, Laranja, Dourado, Bege).
+   - Para Tecnologia / SaaS / Crypto: Use tom escuro ou gradientes modernos.
+
+2. ESTRUTURA DO SITE:
+   - Navbar, Hero Section com imagem de alta qualidade do Unsplash, Seção de Serviços/Cards, Depoimentos e Rodapé completo.
+
+3. REGRAS OBRIGATÓRIAS:
+   1. Retorne APENAS o código HTML completo (CSS e JS embutidos) válido. NADA MAIS. Sem markdown.
+   2. É ESTRITAMENTE PROIBIDO usar Scripts Externos (ex: CDN de JS do Tailwind, GSAP).
+   3. Ícones: FontAwesome CSS ou SVG inline.
+   4. Imagens: Imagens Unsplash de altíssima qualidade.
+   5. Entregue a MAIOR QUALIDADE VISUAL POSSÍVEL. Sombras suaves, contrastes limpos, gradientes leves e layout responsivo.`;
       
       const response = await window.aiService.generateCompletion(text, systemPrompt);
       
