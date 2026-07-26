@@ -1,11 +1,76 @@
+import { 
+  auth, 
+  db, 
+  onAuthStateChanged, 
+  collection, 
+  onSnapshot, 
+  doc, 
+  updateDoc, 
+  deleteDoc, 
+  getDoc 
+} from '/firebase-config.js';
 import { supabase } from '/supabase-config.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Verificação de Segurança (Opcional, exige que o Admin faça login)
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    window.location.href = '/login.html';
+  const usersTableBody = document.getElementById('users-table-body');
+  const userCountEl = document.getElementById('user-count');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg, isError = false) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.style.background = isError ? '#ff4d4f' : '#28a745';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
   }
+
+  // 1. Verificação de Segurança (Super Admin Guard)
+  async function checkAdminAccess(currentUser) {
+    const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
+    const userEmail = currentUser ? currentUser.email : (localUser.email || '');
+
+    const isMasterAdmin = (userEmail === 'brisasofc@gmail.com');
+
+    if (currentUser) {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const uData = snap.data();
+        if (!isMasterAdmin && uData.role !== 'admin') {
+          alert('Acesso negado: Apenas o Super Admin (brisasofc@gmail.com) tem permissão de gerenciar o sistema.');
+          window.location.href = '/dashboard/index.html';
+          return false;
+        }
+      }
+    } else if (!isMasterAdmin && localUser.role !== 'admin') {
+      alert('Acesso restrito ao Administrador. Faça login com brisasofc@gmail.com.');
+      window.location.href = '/login.html';
+      return false;
+    }
+    return true;
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const hasAccess = await checkAdminAccess(user);
+      if (hasAccess) initRealtimeUsers();
+    } else {
+      // Tentar Supabase session fallback
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        const hasAccess = await checkAdminAccess(session.user);
+        if (hasAccess) initRealtimeUsers();
+      } else {
+        const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
+        if (localUser.email === 'brisasofc@gmail.com' || localUser.role === 'admin') {
+          initRealtimeUsers();
+        } else {
+          alert('Sessão expirada ou acesso restrito.');
+          window.location.href = '/login.html';
+        }
+      }
+    }
+  });
 
   // 2. Navegação da Sidebar
   const navItems = document.querySelectorAll('.nav-item[data-target]');
@@ -13,21 +78,158 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   navItems.forEach(item => {
     item.addEventListener('click', () => {
-      // Remove active class from all
       navItems.forEach(n => n.classList.remove('active'));
       sections.forEach(s => s.classList.remove('active'));
-      
-      // Add active class to clicked
       item.classList.add('active');
       const targetId = item.getAttribute('data-target');
-      document.getElementById(targetId).classList.add('active');
+      if (targetId && document.getElementById(targetId)) {
+        document.getElementById(targetId).classList.add('active');
+      }
     });
   });
 
-  // 3. Botão Voltar ao Dashboard
-  document.getElementById('btn-back-dashboard').addEventListener('click', () => {
-    window.location.href = '/dashboard/index.html';
-  });
+  // Botão Voltar ao Dashboard
+  const btnBack = document.getElementById('btn-back-dashboard');
+  if (btnBack) {
+    btnBack.addEventListener('click', () => {
+      window.location.href = '/dashboard/index.html';
+    });
+  }
+
+  // 3. Renderização Dinâmica em Tempo Real da Tabela de Usuários (Firestore)
+  function initRealtimeUsers() {
+    if (!usersTableBody) return;
+
+    onSnapshot(collection(db, 'users'), (snapshot) => {
+      const usersList = [];
+      snapshot.forEach(docSnap => {
+        usersList.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      if (userCountEl) userCountEl.textContent = usersList.length;
+
+      if (usersList.length === 0) {
+        usersTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 20px;">
+              Nenhum usuário cadastrado no Firestore ainda.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      usersTableBody.innerHTML = usersList.map(u => {
+        const isMaster = (u.email === 'brisasofc@gmail.com');
+        const isBlocked = u.status === 'blocked';
+        const isAdmin = u.role === 'admin';
+
+        const roleBadge = isMaster 
+          ? `<span class="badge" style="background: rgba(255, 215, 0, 0.2); color: #ffd700; border: 1px solid #ffd700;">👑 Super Admin</span>`
+          : (isAdmin 
+            ? `<span class="badge" style="background: rgba(13, 110, 253, 0.2); color: #4db8ff; border: 1px solid #0d6efd;">Admin</span>` 
+            : `<span class="badge" style="background: rgba(255, 255, 255, 0.05); color: #adb5bd;">Usuário</span>`);
+
+        const statusBadge = isBlocked 
+          ? `<span class="badge badge-blocked">Bloqueado</span>`
+          : `<span class="badge badge-active">Ativo</span>`;
+
+        const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : 'Recente';
+
+        const blockBtnText = isBlocked ? 'Desbloquear' : 'Bloquear';
+        const blockBtnClass = isBlocked ? 'style="background: #28a745; color: white;"' : 'style="background: #ff4d4f; color: white;"';
+
+        const adminBtnText = isAdmin ? 'Remover Admin' : 'Tornar Admin';
+
+        return `
+          <tr>
+            <td>
+              <strong>${escapeHtml(u.displayName || u.email.split('@')[0])}</strong><br>
+              <span style="color: var(--text-secondary); font-size: 12px;">${escapeHtml(u.email || '')}</span>
+            </td>
+            <td>${roleBadge}</td>
+            <td>${dateStr}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                ${isMaster ? '<span style="font-size: 12px; color: #ffd700;">Protegido</span>' : `
+                  <button class="btn-action btn-toggle-block" ${blockBtnClass} data-id="${u.id}" data-status="${u.status || 'active'}">
+                    ${blockBtnText}
+                  </button>
+                  <button class="btn-action btn-toggle-admin" style="background: #0d6efd; color: white;" data-id="${u.id}" data-role="${u.role || 'user'}">
+                    ${adminBtnText}
+                  </button>
+                  <button class="btn-action btn-delete-user" style="background: rgba(255, 77, 79, 0.2); color: #ff4d4f; border: 1px solid #ff4d4f;" data-id="${u.id}">
+                    Excluir
+                  </button>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      attachActionListeners();
+    }, (error) => {
+      console.error('Erro no listener do Firestore:', error);
+      usersTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; color: #ff4d4f; padding: 20px;">
+            Erro ao carregar usuários do Firestore. Verifique a permissão do projeto.
+          </td>
+        </tr>`;
+    });
+  }
+
+  function attachActionListeners() {
+    // Alternar Bloqueio
+    document.querySelectorAll('.btn-toggle-block').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uid = e.target.getAttribute('data-id');
+        const currentStatus = e.target.getAttribute('data-status');
+        const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked';
+        try {
+          await updateDoc(doc(db, 'users', uid), { status: newStatus });
+          showToast(`Usuário ${newStatus === 'blocked' ? 'bloqueado' : 'desbloqueado'} com sucesso!`);
+        } catch (err) {
+          showToast('Erro ao alterar status: ' + err.message, true);
+        }
+      });
+    });
+
+    // Alternar Função de Admin
+    document.querySelectorAll('.btn-toggle-admin').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uid = e.target.getAttribute('data-id');
+        const currentRole = e.target.getAttribute('data-role');
+        const newRole = currentRole === 'admin' ? 'user' : 'admin';
+        try {
+          await updateDoc(doc(db, 'users', uid), { role: newRole });
+          showToast(`Permissão alterada para ${newRole.toUpperCase()}!`);
+        } catch (err) {
+          showToast('Erro ao alterar permissão: ' + err.message, true);
+        }
+      });
+    });
+
+    // Excluir Usuário
+    document.querySelectorAll('.btn-delete-user').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uid = e.target.getAttribute('data-id');
+        if (confirm('Tem certeza que deseja remover este usuário permanentemente?')) {
+          try {
+            await deleteDoc(doc(db, 'users', uid));
+            showToast('Usuário removido com sucesso!');
+          } catch (err) {
+            showToast('Erro ao remover usuário: ' + err.message, true);
+          }
+        }
+      });
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
   // 4. Lógica de AI Keys (Salvar e Carregar)
   const providerSelect = document.getElementById('provider');
@@ -36,41 +238,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   const keyOpenai = document.getElementById('key-openai');
   const keyAnthropic = document.getElementById('key-anthropic');
   const formAi = document.getElementById('ai-keys-form');
-  const toast = document.getElementById('toast');
 
-  // Carregar dados salvos
   const savedKeys = JSON.parse(localStorage.getItem('sidarta_ai_keys') || '{}');
-  if (savedKeys.provider) providerSelect.value = savedKeys.provider;
-  if (savedKeys.backendUrl) backendUrlInput.value = savedKeys.backendUrl;
-  if (savedKeys.gemini) keyGemini.value = savedKeys.gemini;
-  if (savedKeys.openai) keyOpenai.value = savedKeys.openai;
-  if (savedKeys.anthropic) keyAnthropic.value = savedKeys.anthropic;
+  if (savedKeys.provider && providerSelect) providerSelect.value = savedKeys.provider;
+  if (savedKeys.backendUrl && backendUrlInput) backendUrlInput.value = savedKeys.backendUrl;
+  if (savedKeys.gemini && keyGemini) keyGemini.value = savedKeys.gemini;
+  if (savedKeys.openai && keyOpenai) keyOpenai.value = savedKeys.openai;
+  if (savedKeys.anthropic && keyAnthropic) keyAnthropic.value = savedKeys.anthropic;
 
-  // Salvar novos dados
-  formAi.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const newKeys = {
-      provider: providerSelect.value,
-      backendUrl: backendUrlInput.value.trim(),
-      gemini: keyGemini.value.trim(),
-      openai: keyOpenai.value.trim(),
-      anthropic: keyAnthropic.value.trim()
-    };
-    
-    localStorage.setItem('sidarta_ai_keys', JSON.stringify(newKeys));
-    if (window.aiService) {
-      window.aiService.saveConfig(
-        { gemini: newKeys.gemini, openai: newKeys.openai, anthropic: newKeys.anthropic },
-        newKeys.provider,
-        'gemini-1.5-flash',
-        newKeys.backendUrl
-      );
-    }
-    
-    // Mostrar Toast de sucesso
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  });
+  if (formAi) {
+    formAi.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newKeys = {
+        provider: providerSelect ? providerSelect.value : 'gemini',
+        backendUrl: backendUrlInput ? backendUrlInput.value.trim() : '',
+        gemini: keyGemini ? keyGemini.value.trim() : '',
+        openai: keyOpenai ? keyOpenai.value.trim() : '',
+        anthropic: keyAnthropic ? keyAnthropic.value.trim() : ''
+      };
+      
+      localStorage.setItem('sidarta_ai_keys', JSON.stringify(newKeys));
+      if (window.aiService) {
+        window.aiService.saveConfig(
+          { gemini: newKeys.gemini, openai: newKeys.openai, anthropic: newKeys.anthropic },
+          newKeys.provider,
+          'gemini-1.5-flash-latest',
+          newKeys.backendUrl
+        );
+      }
+      showToast('Configurações salvas com sucesso!');
+    });
+  }
 });

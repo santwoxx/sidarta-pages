@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const localUser = JSON.parse(localStorage.getItem('sidarta_user') || '{}');
+  if (localUser.status === 'blocked') {
+    alert('Sua conta foi bloqueada pelo Administrador. Entre em contato com o suporte.');
+    window.location.href = '/login.html';
+    return;
+  }
+
   const btnSend = document.getElementById('btn-send-prompt');
   const input = document.getElementById('prompt-input');
   const chatMessages = document.getElementById('chat-messages');

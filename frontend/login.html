@@ -40,43 +40,79 @@
     }
 
     .auth-header { text-align: center; margin-bottom: 30px; }
-    .auth-header svg { color: var(--accent-color); fill: rgba(13, 110, 253, 0.2); margin-bottom: 16px; }
-    .auth-header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-    .auth-header p { color: var(--text-secondary); font-size: 14px; }
+    .auth-header svg { color: var(--accent-color); margin-bottom: 10px; }
+    .auth-header h1 { font-size: 24px; font-weight: 700; }
+    .auth-header p { color: var(--text-secondary); font-size: 14px; margin-top: 5px; }
 
     .form-group { margin-bottom: 20px; }
-    .form-group label {
-      display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary);
-    }
+    .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-secondary); }
     .form-control {
-      width: 100%; padding: 14px 16px;
-      background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
-      border-radius: 10px; color: var(--text-primary); font-family: inherit; font-size: 14px;
-      transition: var(--transition); outline: none;
+      width: 100%; padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: white; font-size: 14px;
+      outline: none; transition: var(--transition);
     }
-    .form-control:focus {
-      border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    .form-control:focus { border-color: var(--accent-color); box-shadow: 0 0 10px rgba(13, 110, 253, 0.2); }
+
+    .btn-google {
+      width: 100%;
+      background: #ffffff;
+      color: #333333;
+      border: 1px solid #dadce0;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      transition: var(--transition);
     }
+    .btn-google:hover {
+      background: #f8f9fa;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .divider-or {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin: 15px 0;
+    }
+    .divider-or::before, .divider-or::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .divider-or::before { margin-right: 10px; }
+    .divider-or::after { margin-left: 10px; }
 
     .btn-submit {
       width: 100%; padding: 14px;
-      background: var(--accent-gradient); border: none; border-radius: 10px;
-      color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
-      transition: var(--transition); margin-top: 10px;
+      background: var(--accent-gradient);
+      border: none; border-radius: 10px;
+      color: white; font-weight: 600; font-size: 15px;
+      cursor: pointer; transition: var(--transition);
       box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
     }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13, 110, 253, 0.4); }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); }
 
-    .auth-footer {
-      text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary);
-    }
-    .auth-footer a {
-      color: var(--accent-color); text-decoration: none; font-weight: 600;
-    }
+    .auth-footer { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-secondary); }
+    .auth-footer a { color: var(--accent-color); text-decoration: none; font-weight: 600; }
     .auth-footer a:hover { text-decoration: underline; }
-
+    
     .error-msg {
-      color: #ff4d4f; font-size: 13px; text-align: center; margin-bottom: 16px; display: none;
+      background: rgba(255, 77, 79, 0.1);
+      border: 1px solid rgba(255, 77, 79, 0.3);
+      color: #ff4d4f; padding: 10px; border-radius: 8px;
+      font-size: 13px; margin-bottom: 20px; display: none; text-align: center;
     }
   </style>
 </head>
@@ -90,6 +126,13 @@
     </div>
 
     <div id="error-message" class="error-msg">Email ou senha incorretos.</div>
+
+    <button type="button" class="btn-google" id="btn-google">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.41-1.57-5.13-3.72L.97 13.06C2.45 16 5.47 18 9 18z"/><path fill="#FBBC05" d="M3.87 10.8c-.18-.53-.28-1.1-.28-1.8s.1-1.27.28-1.8L.97 4.94C.35 6.17 0 7.55 0 9s.35 2.83.97 4.06l2.9-2.26z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0 5.47 0 2.45 2 1 4.94l2.9 2.26C4.59 5.05 6.62 3.58 9 3.58z"/></svg>
+      Entrar com Google
+    </button>
+
+    <div class="divider-or">OU COM EMAIL</div>
 
     <form id="login-form">
       <div class="form-group">
@@ -109,29 +152,93 @@
   </div>
 
   <script type="module">
+    import { auth, db, googleProvider, signInWithPopup, signInWithEmailAndPassword, doc, setDoc, getDoc } from '/firebase-config.js';
     import { supabase } from '/supabase-config.js';
 
+    const err = document.getElementById('error-message');
+
+    async function syncUserToFirestore(user) {
+      if (!user) return;
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      const isSuperAdmin = (user.email === 'brisasofc@gmail.com');
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || user.email.split('@')[0],
+          photoURL: user.photoURL || '',
+          role: isSuperAdmin ? 'admin' : 'user',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        });
+      } else {
+        const data = userSnap.data();
+        await setDoc(userRef, {
+          ...data,
+          lastLogin: new Date().toISOString(),
+          role: isSuperAdmin ? 'admin' : (data.role || 'user')
+        }, { merge: true });
+      }
+
+      localStorage.setItem('sidarta_user', JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || user.email.split('@')[0],
+        role: isSuperAdmin ? 'admin' : (userSnap.exists() ? userSnap.data().role : 'user'),
+        status: userSnap.exists() ? userSnap.data().status : 'active'
+      }));
+    }
+
+    // Login com Google
+    document.getElementById('btn-google').addEventListener('click', async () => {
+      err.style.display = 'none';
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        await syncUserToFirestore(result.user);
+        window.location.href = '/dashboard/index.html';
+      } catch (error) {
+        console.error('Erro no Google Sign-In:', error);
+        err.textContent = "Erro ao entrar com Google: " + error.message;
+        err.style.display = 'block';
+      }
+    });
+
+    // Login com Email/Senha
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const pass = document.getElementById('password').value;
       const btn = document.getElementById('btn-login');
-      const err = document.getElementById('error-message');
       
       btn.textContent = 'Carregando...';
       err.style.display = 'none';
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: pass,
-      });
-
-      if (error) {
-        err.textContent = "Erro: " + error.message;
-        err.style.display = 'block';
-        btn.textContent = 'Entrar';
-      } else {
+      try {
+        // Tentar Firebase Auth
+        const userCred = await signInWithEmailAndPassword(auth, email, pass);
+        await syncUserToFirestore(userCred.user);
         window.location.href = '/dashboard/index.html';
+      } catch (fbError) {
+        // Fallback Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: pass,
+        });
+
+        if (error) {
+          err.textContent = "Erro: " + error.message;
+          err.style.display = 'block';
+          btn.textContent = 'Entrar';
+        } else {
+          if (data.user) {
+            await syncUserToFirestore(data.user);
+          }
+          window.location.href = '/dashboard/index.html';
+        }
       }
     });
   </script>

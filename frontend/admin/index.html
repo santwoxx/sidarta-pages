@@ -155,34 +155,23 @@
     <section id="users" class="section-content active">
       <h1 class="header-title">Gerenciamento de Usuários</h1>
       <div class="card">
-        <h3>Usuários Cadastrados (Mockups)</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3>Usuários Cadastrados no Sistema Real (<span id="user-count">0</span>)</h3>
+          <span style="font-size: 13px; color: var(--text-secondary);">Super Admin: <strong>brisasofc@gmail.com</strong></span>
+        </div>
         <table>
           <thead>
             <tr>
               <th>Nome / Email</th>
+              <th>Permissão</th>
               <th>Data de Cadastro</th>
               <th>Status</th>
-              <th>Ações</th>
+              <th>Ações de Controle</th>
             </tr>
           </thead>
           <tbody id="users-table-body">
             <tr>
-              <td>
-                <strong>João Silva</strong><br>
-                <span style="color: var(--text-secondary); font-size: 12px;">joao@exemplo.com</span>
-              </td>
-              <td>25/07/2026</td>
-              <td><span class="badge badge-active">Ativo</span></td>
-              <td><button class="btn-action">Bloquear</button></td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Maria Souza</strong><br>
-                <span style="color: var(--text-secondary); font-size: 12px;">maria@exemplo.com</span>
-              </td>
-              <td>24/07/2026</td>
-              <td><span class="badge badge-blocked">Bloqueado</span></td>
-              <td><button class="btn-action">Desbloquear</button></td>
+              <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 20px;">Carregando usuários em tempo real...</td>
             </tr>
           </tbody>
         </table>
