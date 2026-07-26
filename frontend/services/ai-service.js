@@ -1,6 +1,7 @@
 /**
  * ai-service.js
  * Serviço responsável por comunicar com a API Backend (Render) ou diretamente com provedores de IA.
+ * Suporta chaves clássicas (AIzaSy...) e novas (AQ...) do Google AI Studio / Google Cloud.
  */
 
 class AIService {
@@ -129,11 +130,19 @@ class AIService {
           })
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.result) return data.result;
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && data.result) {
+          return data.result;
+        }
+
+        if (data.error) {
+          throw new Error(data.error);
         }
       } catch (backendError) {
+        // Se a mensagem for um erro retornado pelo próprio backend, lança para o usuário
+        if (backendError.message && !backendError.message.includes('Failed to fetch') && !backendError.message.includes('NetworkError')) {
+          throw backendError;
+        }
         console.warn('Backend Render não respondeu. Alternando para chamada direta de IA:', backendError);
       }
     }
@@ -141,7 +150,7 @@ class AIService {
     // 2. Fallback: Chamada direta no browser caso haja chave configurada
     const currentKey = this.keys[this.defaultProvider];
     if (!currentKey) {
-      throw new Error(`Chave de API não configurada para o provedor: ${this.defaultProvider}. Por favor, insira sua chave em Configurações no Painel Admin.`);
+      throw new Error(`Chave de API não configurada para o provedor: ${this.defaultProvider}. Por favor, insira sua chave no Painel Admin.`);
     }
 
     if (this.defaultProvider === 'openai') {
@@ -149,7 +158,7 @@ class AIService {
     } else if (this.defaultProvider === 'anthropic') {
       return await this._callAnthropic(prompt, systemPrompt);
     } else if (this.defaultProvider === 'gemini') {
-      return await this._callGemini(prompt, systemPrompt);
+      return await this._callGeminiResilient(prompt, systemPrompt);
     } else {
       throw new Error('Provedor de IA desconhecido.');
     }
@@ -174,7 +183,7 @@ class AIService {
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    if (!response.ok) throw new Error(data.error?.message || `Erro OpenAI (${response.status})`);
     return data.choices[0].message.content;
   }
 
@@ -197,76 +206,95 @@ class AIService {
     });
 
     const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
+    if (!response.ok) throw new Error(data.error?.message || `Erro Anthropic (${response.status})`);
     return data.content[0].text;
   }
 
-  async _callGemini(prompt, systemPrompt) {
-    const apiKey = this.keys.gemini;
+  /**
+   * Chamada direta ao Google Gemini com suporte a qualquer chave (AIzaSy ou AQ...), 
+   * retries automáticos com backoff para 429 e fallback dinâmico de modelos.
+   */
+  async _callGeminiResilient(prompt, systemPrompt) {
+    const apiKey = this.keys.gemini ? this.keys.gemini.trim() : '';
     if (!apiKey) {
       throw new Error('Chave de API do Gemini não configurada. Insira sua chave no Painel Admin.');
     }
-    if (!apiKey.startsWith('AIzaSy')) {
-      console.warn('Atenção: Chaves do Google Gemini API V1 normalmente começam com "AIzaSy".');
-    }
 
-    const modelsToTry = [
-      { name: 'gemini-1.5-flash', version: 'v1beta' },
-      { name: 'gemini-1.5-flash', version: 'v1' },
-      { name: 'gemini-2.0-flash', version: 'v1beta' },
-      { name: 'gemini-1.5-pro', version: 'v1beta' }
-    ];
+    const candidateModels = [
+      this.defaultModel,
+      'gemini-1.5-flash',
+      'gemini-1.5-flash-latest',
+      'gemini-2.0-flash',
+      'gemini-1.5-pro'
+    ].filter((m, i, self) => Boolean(m) && self.indexOf(m) === i);
 
-    let lastError = null;
-    let isRateLimited = false;
+    const apiVersions = ['v1beta', 'v1'];
+    const retryDelays = [2000, 5000, 10000];
 
-    for (const item of modelsToTry) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/${item.version}/models/${item.name}:generateContent?key=${apiKey}`;
+    let lastErrorMsg = '';
 
-        const bodyData = {
-          contents: [{ parts: [{ text: prompt }] }]
-        };
-        if (systemPrompt && item.version === 'v1beta') {
-          bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
+    for (const modelName of candidateModels) {
+      for (const apiVer of apiVersions) {
+        const url = `https://generativelanguage.googleapis.com/${apiVer}/models/${modelName}:generateContent?key=${apiKey}`;
+        
+        const payload = { contents: [{ parts: [{ text: prompt }] }] };
+        if (systemPrompt && apiVer === 'v1beta') {
+          payload.systemInstruction = { parts: [{ text: systemPrompt }] };
         }
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            ...(systemPrompt ? { systemInstruction: { parts: [{ text: systemPrompt }] } } : {})
-          })
-        });
+        for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+          try {
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
 
-        if (response.status === 429) {
-          isRateLimited = true;
-          break;
-        }
+            const statusCode = response.status;
+            const data = await response.json().catch(() => ({}));
 
-        const data = await response.json();
-        if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-          return data.candidates[0].content.parts[0].text;
-        }
+            if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+              return data.candidates[0].content.parts[0].text;
+            }
 
-        if (data.error) {
-          if (data.error.code === 429 || data.error.status === 'RESOURCE_EXHAUSTED') {
-            isRateLimited = true;
+            const errorMsg = data.error?.message || `HTTP ${statusCode}`;
+            lastErrorMsg = errorMsg;
+
+            // 401 / 403: Chave de API inválida ou sem permissão
+            if (statusCode === 401 || statusCode === 403) {
+              throw new Error(`Chave de API inválida ou sem permissão (${errorMsg}). Verifique a chave inserida no Admin.`);
+            }
+
+            // 429: Rate limit com retry automático
+            if (statusCode === 429 || data.error?.status === 'RESOURCE_EXHAUSTED') {
+              if (attempt < retryDelays.length) {
+                const delay = retryDelays[attempt];
+                console.warn(`[Gemini Direct 429] Aguardando ${delay / 1000}s para tentativa ${attempt + 2}...`);
+                await new Promise(r => setTimeout(r, delay));
+                continue;
+              }
+            }
+
+            // 404: Modelo não suportado nesta versão, testar próxima alternativa
+            if (statusCode === 404) {
+              break;
+            }
+
+            break;
+          } catch (err) {
+            if (err.message.includes('Chave de API inválida')) throw err;
+            lastErrorMsg = err.message;
             break;
           }
-          lastError = data.error.message;
         }
-      } catch (err) {
-        lastError = err.message;
       }
     }
 
-    if (isRateLimited) {
-      throw new Error('Limite de cota de requisições excedido no Google Gemini (Erro 429 - Rate Limit). Aguarde 1 minuto e tente novamente.');
+    if (lastErrorMsg.includes('429') || lastErrorMsg.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('Limite de cota excedido no Google Gemini (Erro 429 - Rate Limit). As tentativas de reconexão automática falharam. Aguarde 1 minuto e tente novamente.');
     }
 
-    throw new Error(lastError || 'Não foi possível obter resposta do Google Gemini API. Verifique se a sua chave está ativa no Google AI Studio.');
+    throw new Error(lastErrorMsg || 'Não foi possível obter resposta do Google Gemini. Verifique a chave inserida no Admin.');
   }
 }
 
