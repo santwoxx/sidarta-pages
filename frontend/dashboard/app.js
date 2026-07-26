@@ -983,7 +983,14 @@ REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
           console.log(`[Template Match] Carregando modelo base '${matchedTemplate.name}' para personalização por IA.`);
           const tRes = await fetch(matchedTemplate.path);
           if (tRes.ok) {
-            const baseTemplateCode = await tRes.text();
+            let baseTemplateCode = await tRes.text();
+
+            // Normalizar caminhos relativos de imagens, scripts e frames para caminhos absolutos do modelo
+            const templateBaseDir = matchedTemplate.path.substring(0, matchedTemplate.path.lastIndexOf('/'));
+            baseTemplateCode = baseTemplateCode
+              .replace(/src=["'](?!https?:\/\/|\/|data:)([^"']+)["']/gi, `src="${templateBaseDir}/$1"`)
+              .replace(/href=["'](?!https?:\/\/|\/|data:)([^"']+\.(?:css|png|jpg|jpeg|svg|webp|ico))["']/gi, `href="${templateBaseDir}/$1"`);
+
             systemPrompt = `Você é um Engenheiro de Front-end Sênior e Especialista em UI/UX.
 Abaixo está o código HTML de um MODELO BASE PROFISSIONAL DE ALTA QUALIDADE (${matchedTemplate.name}).
 
