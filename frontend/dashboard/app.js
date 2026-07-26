@@ -180,9 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const TEMPLATES = {
     pizza: { name: 'Pizzaria Premium', path: '../modelos/pizza/index.html' },
-    clinica: { name: 'Clínica Médica', path: '../modelos/clinica medica/index.html' },
-    cosmeticos: { name: 'Cosméticos Premium', path: '../modelos/cosmeticos femininos/index.html' },
-    dentista: { name: 'Clínica Odontológica', path: '../modelos/clinica dentista/index.html' }
+    clinica: { name: 'Clínica Médica', path: '../modelos/clinica-medica/index.html' },
+    cosmeticos: { name: 'Cosméticos Premium', path: '../modelos/cosmeticos-femininos/index.html' },
+    dentista: { name: 'Clínica Odontológica', path: '../modelos/clinica-dentista/index.html' }
   };
 
   // ─── VIEW SWITCHING ───
@@ -1114,19 +1114,19 @@ REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
         {
           id: 'clinica',
           keywords: ['clínica médica', 'clinica medica', 'médico', 'hospital', 'saúde', 'doctor'],
-          path: '../modelos/clinica medica/index.html',
+          path: '../modelos/clinica-medica/index.html',
           name: 'Clínica Médica'
         },
         {
           id: 'cosmeticos',
           keywords: ['cosméticos', 'cosmeticos', 'beleza', 'maquiagem', 'feminino', 'skincare'],
-          path: '../modelos/cosmeticos femininos/index.html',
+          path: '../modelos/cosmeticos-femininos/index.html',
           name: 'Cosméticos Premium'
         },
         {
           id: 'dentista',
           keywords: ['clínica odontológica', 'clinica odontologica', 'dentista', 'dente', 'odontologia'],
-          path: '../modelos/clinica dentista/index.html',
+          path: '../modelos/clinica-dentista/index.html',
           name: 'Clínica Odontológica'
         }
       ];
