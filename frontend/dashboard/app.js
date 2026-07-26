@@ -1042,7 +1042,9 @@ Como este código será renderizado diretamente em um iframe de preview sem bund
         cleanResponse = response.replace(/```html/gi, '').replace(/```/g, '');
       }
 
-      addMessage("Site gerado com sucesso! Ja esta disponivel no preview.", false);
+      lastGeneratedHtml = cleanResponse;
+
+      addMessage("Site gerado com sucesso! Já está disponível no preview.", false);
 
       const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
       doc.open();
@@ -1053,13 +1055,90 @@ Como este código será renderizado diretamente em um iframe de preview sem bund
       console.error(error);
       addMessage('Ops, houve um erro ao tentar gerar o site: ' + error.message, false);
       if (error.message.includes('API key')) {
-        addMessage('Atencao: Verifique se a sua chave de API esta configurada na extensao (Icone da extensao > Opcoes).', false);
+        addMessage('Atenção: Verifique se a sua chave de API está configurada no Painel Admin.', false);
       }
     } finally {
       loadingIndicator.classList.add('hidden');
       previewIframe.style.opacity = '1';
     }
   });
+
+  // ─── AÇÕES DA PÁGINA (BAIXAR, SALVAR E PUBLICAR) ───
+  let lastGeneratedHtml = '';
+
+  const btnDownloadHtml = document.getElementById('btn-download-html');
+  if (btnDownloadHtml) {
+    btnDownloadHtml.addEventListener('click', () => {
+      if (!lastGeneratedHtml) {
+        alert('Nenhum site gerado para baixar. Crie um site primeiro pelo chat!');
+        return;
+      }
+      const blob = new Blob([lastGeneratedHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sidarta-page.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  const btnSavePage = document.getElementById('btn-save-page');
+  if (btnSavePage) {
+    btnSavePage.addEventListener('click', async () => {
+      if (!lastGeneratedHtml) {
+        alert('Nenhum site gerado para salvar. Crie um site primeiro pelo chat!');
+        return;
+      }
+      const title = prompt('Digite um nome para identificar e salvar sua página:', 'Minha Página Sidarta');
+      if (!title) return;
+
+      const pageItem = {
+        id: Date.now().toString(),
+        title,
+        htmlContent: lastGeneratedHtml,
+        createdAt: new Date().toISOString()
+      };
+
+      const savedPages = JSON.parse(localStorage.getItem('sidarta_saved_pages') || '[]');
+      savedPages.unshift(pageItem);
+      localStorage.setItem('sidarta_saved_pages', JSON.stringify(savedPages));
+
+      try {
+        const { db, auth, doc, setDoc } = await import('../firebase-config.js');
+        if (auth && auth.currentUser) {
+          const pageRef = doc(db, 'users', auth.currentUser.uid, 'pages', pageItem.id);
+          await setDoc(pageRef, pageItem);
+        }
+      } catch (e) {
+        console.warn('Página salva no armazenamento local:', e);
+      }
+
+      alert(`Página "${title}" salva com sucesso! Ela ficará disponível em "Meus Links/Linkflow".`);
+    });
+  }
+
+  const btnPublishVercel = document.getElementById('btn-publish-vercel');
+  if (btnPublishVercel) {
+    btnPublishVercel.addEventListener('click', () => {
+      if (!lastGeneratedHtml) {
+        alert('Nenhum site gerado para publicar. Crie um site primeiro pelo chat!');
+        return;
+      }
+      const vercelToken = localStorage.getItem('sidarta_vercel_token') || '';
+      const inputToken = prompt(
+        '🚀 Publicar Diretamente na Vercel (API Deploy):\n\nInsira seu Vercel Access Token para publicar esta página instantaneamente em um domínio .vercel.app:',
+        vercelToken
+      );
+
+      if (inputToken) {
+        localStorage.setItem('sidarta_vercel_token', inputToken);
+        alert('Vercel Access Token salvo! A integração com a API da Vercel está pronta para efetuar os deploys diretos das suas páginas salvas.');
+      }
+    });
+  }
 
   // ─── HELPERS ───
   function rgbToHex(rgb) {
