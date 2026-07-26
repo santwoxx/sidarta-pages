@@ -963,6 +963,47 @@ REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
    - Design 100% Responsivo para mobile e desktop.
    - NAO escreva marcacao Markdown como \`\`\`html. Retorne o HTML cru iniciando com <!DOCTYPE html>.`;
 
+      // ─── VERIFICAÇÃO AUTOMÁTICA DE MODELOS BASE ───
+      const REGISTERED_TEMPLATES = [
+        {
+          id: 'pizza',
+          keywords: ['pizza', 'pizzaria', 'pizzeria', 'massa', 'italiana', 'napolitana'],
+          path: '/modelos/pizza/index.html',
+          name: 'Pizzaria Premium'
+        }
+      ];
+
+      const lowerText = text.toLowerCase();
+      const matchedTemplate = REGISTERED_TEMPLATES.find(t => 
+        t.keywords.some(kw => lowerText.includes(kw))
+      );
+
+      if (matchedTemplate) {
+        try {
+          console.log(`[Template Match] Carregando modelo base '${matchedTemplate.name}' para personalização por IA.`);
+          const tRes = await fetch(matchedTemplate.path);
+          if (tRes.ok) {
+            const baseTemplateCode = await tRes.text();
+            systemPrompt = `Você é um Engenheiro de Front-end Sênior e Especialista em UI/UX.
+Abaixo está o código HTML de um MODELO BASE PROFISSIONAL DE ALTA QUALIDADE (${matchedTemplate.name}).
+
+SUA MISSÃO:
+Personalizar e adaptar este modelo base de acordo com a solicitação do usuário: "${text}".
+
+REGRAS DE PERSONALIZAÇÃO OBRIGATÓRIAS:
+1. MANTENHA A EXCELENTE ESTRUTURA VISUAL, ANIMAÇÕES E DESIGN DO MODELO BASE.
+2. Altere os nomes, títulos, textos do cardápio, dados de contato e links do WhatsApp conforme solicitado no prompt.
+3. Ajuste a paleta de cores ou adicione novas seções se o usuário pedir, mantendo a consistência do layout.
+4. RETORNE APENAS O CÓDIGO HTML COMPLETO E FINAL iniciando com <!DOCTYPE html>. NADA MAIS.
+
+=== CÓDIGO HTML DO MODELO BASE ===
+${baseTemplateCode}`;
+          }
+        } catch (tErr) {
+          console.warn('Não foi possível carregar o código do modelo base:', tErr);
+        }
+      }
+
       if (typeof activeSkillId !== 'undefined' && activeSkillId) {
         try {
           const { getSkillPrompt } = await import('../services/skills.js');
