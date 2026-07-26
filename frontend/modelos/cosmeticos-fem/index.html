@@ -1,0 +1,545 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SULTAN AL-OUD — Cinematic Oud Attar</title>
+<meta name="description" content="Sultan Al-Oud — a cinematic oud attar. Facetted crystal, onyx cap, gold seal, distilled from an ancient ritual.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#c2a15a;
+  --gold-light:#e0bd74;
+  --bg:#0a0906;
+  --bg2:#14120d;
+  --bg3:#1c1911;
+  --text:#f3e8d4;
+  --muted:#9c8f78;
+  --border:rgba(194,161,90,.18);
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img,video{max-width:100%;display:block;}
+.serif{font-family:'Playfair Display',serif;}
+.gold{color:var(--gold);}
+.wrap{max-width:1320px;margin:0 auto;padding:0 6vw;}
+section{position:relative;}
+
+.reveal{opacity:0;transform:translateY(34px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:2.2rem 6vw;transition:padding .4s,background .4s,border-color .4s;border-bottom:1px solid transparent;}
+nav.scrolled{padding:1.1rem 6vw;background:rgba(10,9,6,.86);backdrop-filter:blur(14px);border-bottom-color:var(--border);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.05rem;letter-spacing:.28em;font-weight:700;color:var(--text);text-decoration:none;}
+.nav-logo b{color:var(--gold);font-weight:700;}
+.nav-cta{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:.7rem 1.5rem;border-radius:2px;transition:background .3s,color .3s;white-space:nowrap;}
+.nav-cta:hover{background:var(--gold);color:var(--bg);}
+
+/* ── HERO ── */
+.hero{height:100svh;min-height:680px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.62) saturate(1.05);}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 0%,rgba(10,9,6,.55) 78%,rgba(10,9,6,.92) 100%);z-index:1;}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:24vh;background:linear-gradient(transparent,var(--bg));z-index:1;}
+.hero-inner{position:relative;z-index:2;text-align:center;padding:0 5vw;}
+.hero-eyebrow{font-size:.74rem;letter-spacing:.55em;text-transform:uppercase;color:var(--gold-light);margin-bottom:2rem;opacity:.9;}
+.hero-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(3.2rem,11vw,8.6rem);line-height:.96;color:#f8efdc;text-shadow:0 4px 50px rgba(0,0,0,.5);}
+.hero-title .ar{display:block;font-weight:400;font-size:.38em;letter-spacing:.08em;color:var(--gold-light);margin-top:1.2rem;}
+.hero-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.1rem,2.2vw,1.6rem);color:var(--muted);margin-top:1.8rem;max-width:36rem;margin-left:auto;margin-right:auto;line-height:1.6;}
+.hero-scroll{position:absolute;bottom:2.6rem;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.6rem;color:var(--muted);font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;}
+.hero-scroll .line{width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:scrollpulse 2s ease-in-out infinite;}
+@keyframes scrollpulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ── SECTION HEADERS ── */
+.sec-eyebrow{font-size:.74rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem;font-weight:500;}
+.sec-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(2.6rem,6vw,5rem);line-height:1.04;color:var(--text);}
+.sec-title em{font-style:italic;color:var(--gold);font-weight:400;}
+.sec-rule{width:64px;height:2px;background:var(--gold);margin:2rem 0;}
+.sec-lede{font-size:1.05rem;font-weight:300;line-height:1.8;color:var(--muted);max-width:640px;margin-top:1.5rem;}
+
+/* ── RITUAL / STORY ── */
+.ritual{padding:13rem 0 10rem;text-align:center;}
+.ritual .wrap{max-width:900px;}
+.ritual-quote{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(1.5rem,3.8vw,2.8rem);line-height:1.5;color:#ece0c9;}
+.ritual-quote .gold{font-style:normal;font-weight:600;}
+.ritual-body{margin-top:2.8rem;font-size:1.1rem;font-weight:300;line-height:1.95;color:var(--muted);max-width:680px;margin-left:auto;margin-right:auto;}
+.ritual-sep{width:1px;height:70px;background:linear-gradient(var(--gold),transparent);margin:3.5rem auto 0;}
+
+/* ── ARC INTRO ── */
+.arc-intro{padding:8rem 0 5rem;text-align:center;}
+
+/* ── FULL-BLEED ARC MOMENTS ── */
+.moment{height:100vh;min-height:720px;position:relative;display:flex;align-items:flex-end;overflow:hidden;}
+.moment video,.moment img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.moment::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,9,6,.15) 0%,rgba(10,9,6,.1) 40%,rgba(10,9,6,.88) 92%);z-index:1;}
+.moment-inner{position:relative;z-index:2;width:100%;padding:0 6vw 6vw;display:flex;justify-content:space-between;align-items:flex-end;gap:3rem;}
+.moment.right .moment-inner{flex-direction:row-reverse;text-align:right;}
+.moment-num{font-family:'Playfair Display',serif;font-size:clamp(4rem,10vw,9rem);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--gold);line-height:.8;opacity:.85;flex-shrink:0;}
+.moment-text{max-width:34rem;}
+.moment.right .moment-text{margin-left:auto;}
+.moment-eyebrow{font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold-light);margin-bottom:.9rem;}
+.moment-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(2.2rem,5vw,4rem);color:#f8efdc;line-height:1.05;}
+.moment-desc{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1rem,1.6vw,1.3rem);color:var(--muted);margin-top:1rem;line-height:1.5;}
+@media(max-width:760px){
+  .moment-inner{flex-direction:column-reverse!important;align-items:flex-start!important;gap:1.4rem;text-align:left!important;}
+  .moment.right .moment-text{margin-left:0;}
+  .moment-num{font-size:3.2rem;}
+}
+
+/* ── CRAFT DETAILS ── */
+.craft{padding:10rem 0;background:var(--bg2);}
+.craft-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2.4rem;margin-top:4rem;}
+.craft-card{background:var(--bg3);border-radius:6px;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.craft-card .img-wrap{position:relative;aspect-ratio:4/5;overflow:hidden;background:#efe9df;}
+.craft-card .img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;display:block;}
+.craft-cap{padding:1.6rem 1.8rem;background:var(--bg3);flex:1;display:flex;flex-direction:column;justify-content:center;}
+.craft-cap .n{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);}
+.craft-cap .t{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text);margin-top:.4rem;}
+.craft-cap .d{font-size:.85rem;color:var(--muted);margin-top:.5rem;line-height:1.6;}
+@media(max-width:760px){.craft-grid{grid-template-columns:1fr;}}
+
+/* ── DESIGN EVOLUTION ── */
+.evolution{padding:10rem 0;position:relative;}
+.evo-scroll-wrap{position:relative;}
+.evo-scroll{display:flex;gap:1.6rem;margin-top:4rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:none;cursor:grab;}
+.evo-scroll.dragging{cursor:grabbing;}
+.evo-scroll::-webkit-scrollbar{display:none;}
+.evo-fade{position:absolute;top:0;right:0;bottom:.5rem;width:6rem;background:linear-gradient(90deg,transparent,var(--bg) 96%);pointer-events:none;z-index:2;}
+/* nav arrows + progress */
+.evo-nav{position:absolute;top:calc(4rem + 163px);width:48px;height:48px;border-radius:50%;background:rgba(10,9,6,.72);border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;transition:background .25s,transform .25s;backdrop-filter:blur(6px);}
+.evo-nav:hover{background:var(--gold);color:var(--bg);transform:scale(1.08);}
+.evo-nav.prev{left:-24px;}
+.evo-nav.next{right:-24px;}
+.evo-nav svg{width:18px;height:18px;}
+.evo-nav[disabled]{opacity:.25;pointer-events:none;}
+.evo-progress-track{position:relative;height:3px;background:var(--border);border-radius:3px;margin-top:1.8rem;overflow:hidden;}
+.evo-progress-bar{position:absolute;top:0;left:0;height:100%;width:11%;background:var(--gold);border-radius:3px;transition:width .15s,left .15s;}
+.evo-count-txt{margin-top:1rem;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.evo-count-txt b{color:var(--gold-light);font-weight:600;}
+.evo-hint-mobile{display:none;}
+@media(max-width:760px){.evo-nav{display:none;}.evo-hint-desktop{display:none;}.evo-hint-mobile{display:inline;}}
+.evo-card{flex:0 0 280px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;user-select:none;display:flex;flex-direction:column;}
+.evo-card .img-wrap{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--bg2);}
+.evo-card .img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;display:block;}
+.evo-card.grey{background:#efe9df;}
+.evo-card.grey .img-wrap{background:#efe9df;}
+.evo-card.grey .img-wrap img{mix-blend-mode:multiply;}
+.evo-card.grey .evo-cap{background:var(--bg3);}
+.evo-cap{padding:1.2rem 1.4rem;flex:1;background:var(--bg2);}
+.evo-cap .n{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+.evo-cap .t{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);margin-top:.3rem;}
+.evo-final{position:relative;}
+.evo-final::after{content:'FINAL';position:absolute;top:.9rem;right:.9rem;background:var(--gold);color:var(--bg);font-size:.6rem;letter-spacing:.12em;font-weight:700;padding:.35rem .7rem;border-radius:20px;}
+
+/* ── NOTES (fragrance pyramid) ── */
+.notes{padding:10rem 0;text-align:center;background:var(--bg2);}
+.notes .wrap{max-width:820px;}
+.notes-tiers{margin-top:5rem;display:flex;flex-direction:column;gap:0;}
+.tier{padding:3.2rem 0;border-top:1px solid var(--border);display:grid;grid-template-columns:130px 1fr;gap:2.4rem;align-items:center;text-align:left;}
+.tier:last-child{border-bottom:1px solid var(--border);}
+.tier-lbl{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);}
+.tier-lbl small{display:block;font-size:.62rem;color:var(--muted);letter-spacing:.15em;margin-top:.4rem;}
+.tier-notes{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2.6vw,1.9rem);color:var(--text);line-height:1.5;}
+.tier-notes span{color:var(--muted);font-size:.85em;}
+@media(max-width:640px){.tier{grid-template-columns:1fr;gap:.7rem;text-align:center;}}
+
+/* ── PRICING ── */
+.pricing{padding:10rem 0;}
+.pricing-head{text-align:center;margin-bottom:5rem;}
+.pricing-head .sec-rule{margin-left:auto;margin-right:auto;}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.price-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3.6rem 2.6rem;text-align:center;position:relative;transition:transform .4s,border-color .4s;}
+.price-card:hover{transform:translateY(-8px);border-color:var(--gold);}
+.price-card.feat{border-color:var(--gold);background:linear-gradient(180deg,rgba(194,161,90,.1),var(--bg3) 40%);transform:scale(1.04);}
+.price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--bg);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;padding:.45rem 1.1rem;border-radius:20px;white-space:nowrap;}
+.price-size{font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+.price-name{font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--text);margin-bottom:1.6rem;}
+.price-val{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--gold-light);}
+.price-per{font-size:.75rem;color:var(--muted);margin-top:.35rem;margin-bottom:2rem;}
+.price-feats{list-style:none;text-align:left;font-size:.9rem;color:var(--muted);line-height:2.2;margin-bottom:2.4rem;}
+.price-feats li::before{content:'—';color:var(--gold);margin-right:.6rem;}
+.price-btn{display:inline-block;width:100%;padding:1.05rem;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;border-radius:4px;transition:background .3s,color .3s;}
+.price-btn:hover{background:var(--gold);color:var(--bg);}
+.price-card.feat .price-btn{background:var(--gold);color:var(--bg);}
+.price-card.feat .price-btn:hover{background:var(--gold-light);}
+.price-note{text-align:center;margin-top:3rem;font-size:.82rem;color:var(--muted);}
+@media(max-width:860px){.price-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}.price-card.feat{transform:none;}}
+
+/* ── CLOSING ── */
+.closing{height:92vh;min-height:640px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;overflow:hidden;padding:6.5rem 6vw 5rem;}
+.closing img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;}
+.closing::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(10,9,6,.15) 16%,rgba(10,9,6,.1) 55%,rgba(10,9,6,.55) 82%,var(--bg) 100%);}
+.closing-top{position:relative;z-index:2;}
+.closing-bottom{position:relative;z-index:2;}
+.closing-eyebrow{font-size:.72rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1.4rem;opacity:.9;}
+.closing-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3.6vw,2.7rem);font-style:italic;color:#f3e8d4;max-width:34rem;margin:0 auto;line-height:1.5;text-shadow:0 2px 24px rgba(0,0,0,.6);}
+.closing-btn{display:inline-block;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bg);background:var(--gold);text-decoration:none;padding:1.15rem 2.9rem;border-radius:4px;transition:background .3s;}
+.closing-btn:hover{background:var(--gold-light);}
+
+/* ── FOOTER ── */
+footer{padding:4.5rem 6vw 3.2rem;text-align:center;border-top:1px solid var(--border);}
+footer .fw{font-family:'Playfair Display',serif;font-size:.9rem;letter-spacing:.15em;color:var(--muted);}
+footer .fw a{color:var(--gold);text-decoration:none;}
+footer .fw a:hover{text-decoration:underline;}
+footer .fdisclaimer{font-size:.7rem;color:rgba(156,143,120,.6);margin-top:1rem;letter-spacing:.03em;}
+
+@media(max-width:640px){
+  .ritual{padding:8rem 0 6rem;}
+  .arc-intro{padding:5rem 0 3rem;}
+  .craft{padding:6rem 0;}
+  .evolution{padding:6rem 0;}
+  .notes{padding:7rem 0;}
+  .pricing{padding:7rem 0;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">SULTAN<b> AL-OUD</b></a>
+  <a href="#pricing" class="nav-cta">Get It</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <video autoplay="" muted="" loop="" playsinline="" poster="assets/img/cap.jpg">
+    <source src="media/cap.mp4" type="video/mp4">
+  </video>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Cinematic Oud Attar</div>
+    <h1 class="hero-title">SULTAN AL-OUD<span class="ar">سلطان العود</span></h1>
+    <p class="hero-sub">A single drop, held between the palms — dignity, distilled into oud.</p>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- ══ THE RITUAL ══ -->
+<section class="ritual">
+  <div class="wrap reveal">
+    <p class="ritual-quote">"Not seduction — <span class="gold">ritual</span>. A single bottle, a single tradition, held before something that matters."</p>
+    <p class="ritual-body">Sultan Al-Oud is built around anointing — the real Arabian custom of rubbing oud oil between the palms before prayer or a special occasion. The bottle carries that weight: a facetted crystal flacon, an onyx cap, a gold seal engraved with the letter <span style="font-family:'Playfair Display',serif;">س</span> — Sin, for Sultan. A single tradition, held before something that matters.</p>
+    <div class="ritual-sep"></div>
+  </div>
+</section>
+
+<!-- ══ ARC INTRO ══ -->
+<section class="arc-intro">
+  <div class="wrap reveal" style="text-align:center;">
+    <div class="sec-eyebrow">Chapter 01</div>
+    <h2 class="sec-title">The Hero-Spot <em>Arc</em></h2>
+    <div class="sec-rule" style="margin-left:auto;margin-right:auto;"></div>
+    <p class="sec-lede" style="margin-left:auto;margin-right:auto;">Seven moments, one bottle, shot the way a real product film would be — each one full-frame, each one its own scene.</p>
+  </div>
+</section>
+
+<!-- ══ FULL-BLEED MOMENTS ══ -->
+<section class="moment" data-name="drop">
+  <div class="moment-inner">
+    <div class="moment-num">01</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">The Drop</div>
+      <div class="moment-title">A Single Tear<br>of Oud</div>
+      <p class="moment-desc">One drop, caught mid-fall — the whole campaign begins here.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment right" data-name="impact">
+  <div class="moment-inner">
+    <div class="moment-num">02</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Impact</div>
+      <div class="moment-title">Where Liquid<br>Meets Stone</div>
+      <p class="moment-desc">A crown of oud oil, frozen at the exact moment it lands.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment" data-name="smoke">
+  <div class="moment-inner">
+    <div class="moment-num">03</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Smoke</div>
+      <div class="moment-title">Before It's Worn,<br>It's Burned</div>
+      <p class="moment-desc">Oud incense — the tradition the fragrance is named after.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment right" data-name="mashrabiya">
+  <div class="moment-inner">
+    <div class="moment-num">04</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Mashrabiya Light</div>
+      <div class="moment-title">Filtered Through<br>Carved Wood</div>
+      <p class="moment-desc">Traditional lattice-work light finds the crystal and the gold.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment" data-name="desert">
+  <div class="moment-inner">
+    <div class="moment-num">05</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Desert</div>
+      <div class="moment-title">Alone on the Dune,<br>Under a Crescent Moon</div>
+      <p class="moment-desc">Scale and silence — the bottle against the vastness it comes from.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment right" data-name="oudoil">
+  <div class="moment-inner">
+    <div class="moment-num">06</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Oud Oil Pour</div>
+      <div class="moment-title">The Oil That<br>Gives It Its Name</div>
+      <p class="moment-desc">Dark, viscous, poured slow — the raw material at the center of it all.</p>
+    </div>
+  </div>
+</section>
+
+<section class="moment" data-name="cap">
+  <div class="moment-inner">
+    <div class="moment-num">07</div>
+    <div class="moment-text">
+      <div class="moment-eyebrow">Cap & Seal Detail</div>
+      <div class="moment-title">The Seal —<br>Pressed in Gold</div>
+      <p class="moment-desc">The letter <span style="font-family:'Playfair Display',serif;font-style:italic;">س</span> — Sin, for Sultan — struck into a gold medallion on black onyx.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CRAFT DETAILS ══ -->
+<section class="craft">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">Chapter 02</div>
+      <h2 class="sec-title">Bottle <em>Details</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-lede">The final, locked design — studio-shot from every angle before a single ad frame was built.</p>
+    </div>
+    <div class="craft-grid reveal">
+      <div class="craft-card">
+        <div class="img-wrap"><img src="images/sheet-front.jpg" alt="Front view"></div>
+        <div class="craft-cap"><div class="n">01 · Front</div><div class="t">The Full Silhouette</div><div class="d">Facetted crystal body, gold engraving band, onyx ball cap — the complete profile.</div></div>
+      </div>
+      <div class="craft-card">
+        <div class="img-wrap"><img src="images/sheet-34.jpg" alt="3/4 view"></div>
+        <div class="craft-cap"><div class="n">02 · Three-Quarter</div><div class="t">The Cut Catches Light</div><div class="d">Every facet was designed to throw a different reflection at this angle.</div></div>
+      </div>
+      <div class="craft-card">
+        <div class="img-wrap"><img src="images/sheet-back.jpg" alt="Back view"></div>
+        <div class="craft-cap"><div class="n">03 · Back</div><div class="t">No Detail Skipped</div><div class="d">Even the unseen side holds the same crystal precision.</div></div>
+      </div>
+      <div class="craft-card">
+        <div class="img-wrap"><img src="images/sheet-cap.jpg" alt="Cap macro"></div>
+        <div class="craft-cap"><div class="n">04 · Cap Macro</div><div class="t">The س Seal</div><div class="d">Brushed gold, engraved medallion, glossy onyx sphere — the signature detail.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DESIGN EVOLUTION ══ -->
+<section class="evolution">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">Chapter 03 — Process</div>
+      <h2 class="sec-title">Design <em>Evolution</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-lede">Before the bottle was locked, four cap shapes and cut patterns were explored — plus a full alternate studio pass. Nothing here made the final cut except Concept 03.</p>
+    </div>
+    <div class="evo-scroll-wrap reveal">
+      <button class="evo-nav prev" id="evoPrev" aria-label="Previous" disabled=""><svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      <button class="evo-nav next" id="evoNext" aria-label="Next"><svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      <div class="evo-scroll" id="evoScroll">
+        <div class="evo-card"><div class="img-wrap"><img src="images/concept-v1.jpg" alt="Concept 01"></div><div class="evo-cap"><div class="n">Concept 01</div><div class="t">Early Silhouette</div></div></div>
+        <div class="evo-card"><div class="img-wrap"><img src="images/concept-v2.jpg" alt="Concept 02"></div><div class="evo-cap"><div class="n">Concept 02</div><div class="t">Refined Cap</div></div></div>
+        <div class="evo-card evo-final"><div class="img-wrap"><img src="images/hero-bottle.jpg" alt="Concept 03 — final"></div><div class="evo-cap"><div class="n">Concept 03</div><div class="t">Locked & Final</div></div></div>
+        <div class="evo-card"><div class="img-wrap"><img src="images/concept-v4.jpg" alt="Concept 04"></div><div class="evo-cap"><div class="n">Concept 04</div><div class="t">Diamond-Cut Pass</div></div></div>
+        <div class="evo-card grey"><div class="img-wrap"><img src="images/v2-hero.jpg" alt="Alternate studio pass"></div><div class="evo-cap"><div class="n">Alt. Pass</div><div class="t">Studio Hero</div></div></div>
+        <div class="evo-card grey"><div class="img-wrap"><img src="images/v2-front.jpg" alt="Alternate front"></div><div class="evo-cap"><div class="n">Alt. Pass</div><div class="t">Front</div></div></div>
+        <div class="evo-card grey"><div class="img-wrap"><img src="images/v2-34.jpg" alt="Alternate 3/4"></div><div class="evo-cap"><div class="n">Alt. Pass</div><div class="t">Three-Quarter</div></div></div>
+        <div class="evo-card grey"><div class="img-wrap"><img src="images/v2-back.jpg" alt="Alternate back"></div><div class="evo-cap"><div class="n">Alt. Pass</div><div class="t">Back</div></div></div>
+        <div class="evo-card grey"><div class="img-wrap"><img src="images/v2-cap.jpg" alt="Alternate cap"></div><div class="evo-cap"><div class="n">Alt. Pass</div><div class="t">Cap Macro</div></div></div>
+      </div>
+      <div class="evo-fade"></div>
+      <div class="evo-progress-track"><div class="evo-progress-bar" id="evoBar"></div></div>
+      <div class="evo-count-txt"><b id="evoCur">1</b> / 9 — <span class="evo-hint-desktop">drag, scroll, or use the arrows to explore</span><span class="evo-hint-mobile">swipe to explore</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NOTES ══ -->
+<section class="notes">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">The Composition</div>
+      <h2 class="sec-title">Fragrance <em>Notes</em></h2>
+    </div>
+    <div class="notes-tiers reveal">
+      <div class="tier">
+        <div class="tier-lbl">Top<small>First 15 min</small></div>
+        <div class="tier-notes">Saffron, black pepper, <span>bergamot</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-lbl">Heart<small>Hours 1–4</small></div>
+        <div class="tier-notes">Royal oud, rose de Taif, <span>frankincense</span></div>
+      </div>
+      <div class="tier">
+        <div class="tier-lbl">Base<small>Hours 4+</small></div>
+        <div class="tier-notes">Amber, sandalwood, <span>musk, oud resin</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-head reveal">
+      <div class="sec-eyebrow">Get Sultan Al-Oud</div>
+      <h2 class="sec-title">Choose Your <em>Flacon</em></h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="price-grid reveal">
+      <div class="price-card">
+        <div class="price-size">12ml · Travel</div>
+        <div class="price-name">The Traveler</div>
+        <div class="price-val">€149</div>
+        <div class="price-per">≈ €12.40 / ml</div>
+        <ul class="price-feats">
+          <li>Facetted crystal flacon</li>
+          <li>Onyx cap, gold seal</li>
+          <li>Gift box included</li>
+        </ul>
+        <a href="mailto:atelier@sultanaloud.com?subject=Sultan%20Al-Oud%20Inquiry" class="price-btn">Inquire</a>
+      </div>
+      <div class="price-card feat">
+        <div class="price-badge">Most Chosen</div>
+        <div class="price-size">30ml · Signature</div>
+        <div class="price-name">The Sultan</div>
+        <div class="price-val">€289</div>
+        <div class="price-per">≈ €9.63 / ml</div>
+        <ul class="price-feats">
+          <li>Facetted crystal flacon</li>
+          <li>Onyx cap, gold seal</li>
+          <li>Engraved gift box</li>
+          <li>Complimentary travel atomizer</li>
+        </ul>
+        <a href="mailto:atelier@sultanaloud.com?subject=Sultan%20Al-Oud%20Inquiry" class="price-btn">Inquire</a>
+      </div>
+      <div class="price-card">
+        <div class="price-size">50ml · Grand Reserve</div>
+        <div class="price-name">The Legacy</div>
+        <div class="price-val">€459</div>
+        <div class="price-per">≈ €9.18 / ml</div>
+        <ul class="price-feats">
+          <li>Facetted crystal flacon</li>
+          <li>Onyx cap, gold seal</li>
+          <li>Lacquered heirloom box</li>
+          <li>Numbered edition card</li>
+        </ul>
+        <a href="mailto:atelier@sultanaloud.com?subject=Sultan%20Al-Oud%20Inquiry" class="price-btn">Inquire</a>
+      </div>
+    </div>
+    <p class="price-note">By appointment and inquiry only. Each flacon is hand-numbered and produced in limited quantity.</p>
+  </div>
+</section>
+
+<!-- ══ CLOSING ══ -->
+<section class="closing">
+  <img src="images/endcard.jpg" alt="Sultan Al-Oud">
+  <div class="closing-top">
+    <div class="closing-eyebrow">The Ritual Continues</div>
+    <p class="closing-title">An ancient tradition, distilled into a single bottle — for the moment that matters.</p>
+  </div>
+  <div class="closing-bottom">
+    <a href="#pricing" class="closing-btn">→ Choose Your Flacon</a>
+  </div>
+</section>
+
+<footer>
+  <div class="fw">SULTAN AL-OUD</div>
+  <div class="fdisclaimer">© 2026 Sultan Al-Oud. All rights reserved.</div>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>40);},{passive:true});
+
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// full-bleed moment videos — lazy play in view
+document.querySelectorAll('.moment').forEach(sec=>{
+  const name=sec.dataset.name;
+  const v=document.createElement('video');
+  v.muted=true;v.loop=true;v.playsInline=true;v.preload="none";
+  v.poster=`assets/img/big-${name}.jpg`;
+  v.innerHTML=`<source src="assets/video/${name}.mp4" type="video/mp4">`;
+  sec.insertBefore(v,sec.firstChild);
+
+  const vio=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){v.play().catch(()=>{});}
+      else{v.pause();}
+    });
+  },{threshold:.25});
+  vio.observe(sec);
+});
+
+// drag-to-scroll for the design-evolution strip
+const evoScroll=document.getElementById('evoScroll');
+if(evoScroll){
+  let isDown=false,startX,scrollStart,moved=false;
+  evoScroll.addEventListener('mousedown',(e)=>{
+    isDown=true;moved=false;evoScroll.classList.add('dragging');
+    startX=e.pageX;scrollStart=evoScroll.scrollLeft;
+  });
+  window.addEventListener('mouseup',()=>{isDown=false;evoScroll.classList.remove('dragging');});
+  window.addEventListener('mousemove',(e)=>{
+    if(!isDown)return;
+    e.preventDefault();
+    const dx=e.pageX-startX;
+    if(Math.abs(dx)>4)moved=true;
+    evoScroll.scrollLeft=scrollStart-dx;
+  });
+  evoScroll.addEventListener('click',(e)=>{if(moved){e.preventDefault();e.stopPropagation();}},true);
+
+  // prev/next arrow buttons — scroll by exactly one card width
+  const evoPrev=document.getElementById('evoPrev'), evoNext=document.getElementById('evoNext');
+  const cardStep=()=>evoScroll.querySelector('.evo-card').getBoundingClientRect().width+26; // width + gap
+  evoPrev.addEventListener('click',()=>evoScroll.scrollBy({left:-cardStep(),behavior:'smooth'}));
+  evoNext.addEventListener('click',()=>evoScroll.scrollBy({left:cardStep(),behavior:'smooth'}));
+
+  // progress bar + counter + arrow disabled-state, driven by scroll position
+  const evoBar=document.getElementById('evoBar'), evoCur=document.getElementById('evoCur');
+  const totalCards=evoScroll.querySelectorAll('.evo-card').length;
+  function updateEvoUI(){
+    const max=evoScroll.scrollWidth-evoScroll.clientWidth;
+    const pct=max>0?evoScroll.scrollLeft/max:0;
+    const barW=100/totalCards; // one card's share of the track
+    evoBar.style.width=barW+'%';
+    evoBar.style.left=(pct*(100-barW))+'%';
+    evoCur.textContent=Math.min(totalCards,Math.round(pct*(totalCards-1))+1);
+    evoPrev.disabled=evoScroll.scrollLeft<=2;
+    evoNext.disabled=evoScroll.scrollLeft>=max-2;
+  }
+  evoScroll.addEventListener('scroll',updateEvoUI,{passive:true});
+  window.addEventListener('resize',updateEvoUI);
+  updateEvoUI();
+}
+</script>
+
+
+
+</body></html>
