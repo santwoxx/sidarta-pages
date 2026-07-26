@@ -1163,3 +1163,12 @@ body {
 .btn-copy-session { width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); }
 .btn-copy-session:hover { background: rgba(255,255,255,0.1); }
 
+
+/* --- TABS --- */
+.dashboard-tabs { display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+.tab-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: var(--transition); }
+.tab-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.tab-btn.active { background: var(--accent-color); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4); }
+.tab-content { display: block; }
+.tab-content.hidden { display: none !important; }
+

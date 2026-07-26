@@ -14,6 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (avatarDisplay) avatarDisplay.textContent = localUser.email.substring(0, 2).toUpperCase();
   }
 
+  // --- Lógica de Abas do Dashboard ---
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remover active de todos
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.add('hidden'));
+      
+      // Adicionar no atual
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-target');
+      const targetContent = document.getElementById(targetId);
+      if (targetContent) {
+        targetContent.classList.remove('hidden');
+      }
+    });
+  });
 
   const btnSend = document.getElementById('btn-send-prompt');
   const input = document.getElementById('prompt-input');

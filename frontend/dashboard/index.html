@@ -91,11 +91,17 @@
       </div>
     </section>
 
-    <!-- TEMPLATES SECTION -->
-    <section class="templates-section">
+    <!-- TABS NAVIGATION -->
+    <div class="dashboard-tabs">
+      <button class="tab-btn active" data-target="tab-modelos">Modelos Salvos</button>
+      <button class="tab-btn" data-target="tab-recentes">Sessões Recentes</button>
+    </div>
+
+    <!-- MODELOS SALVOS SECTION -->
+    <section class="templates-section tab-content active" id="tab-modelos">
       <div class="section-header">
-        <span class="badge badge-purple">Sessões Novas</span>
-        <h2>Sessões Recentes</h2>
+        <span class="badge badge-purple">Modelos Premium</span>
+        <h2>Modelos Salvos</h2>
       </div>
       
       <div class="templates-grid">
@@ -112,7 +118,17 @@
             <button class="btn-copy-session btn-primary-purple" data-action="edit" style="width: 100%; border: none;">Editar no Construtor</button>
           </div>
         </div>
+      </div>
+    </section>
 
+    <!-- SESSÕES RECENTES SECTION -->
+    <section class="templates-section tab-content hidden" id="tab-recentes">
+      <div class="section-header">
+        <span class="badge badge-purple">Seus Projetos</span>
+        <h2>Sessões Recentes</h2>
+      </div>
+      
+      <div class="templates-grid">
         <!-- Template Card 2 -->
         <div class="template-card-modern">
           <div class="card-header">
