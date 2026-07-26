@@ -746,7 +746,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function bindExport(iframe, tpl) {
     document.getElementById('btn-export-html').addEventListener('click', () => {
       const doc = iframe.contentDocument;
-      const html = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+      let html = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+      // Remover tag <base> injetada pelo editor
+      html = html.replace(/<base[^>]*>/i, '');
       const blob = new Blob([html], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1142,13 +1144,7 @@ REGRAS DE DESIGN & PALETA DE CORES CONTEXTUAL:
           const tRes = await fetch(matchedTemplate.path);
           if (tRes.ok) {
             let baseTemplateCode = await tRes.text();
-
-            // Normalizar caminhos relativos de imagens, scripts e frames para caminhos absolutos do modelo
-            const templateBaseDir = matchedTemplate.path.substring(0, matchedTemplate.path.lastIndexOf('/'));
-            baseTemplateCode = baseTemplateCode
-              .replace(/src=["'](?!https?:\/\/|\/|data:)([^"']+)["']/gi, `src="${templateBaseDir}/$1"`)
-              .replace(/href=["'](?!https?:\/\/|\/|data:)([^"']+\.(?:css|png|jpg|jpeg|svg|webp|ico))["']/gi, `href="${templateBaseDir}/$1"`);
-
+            
             systemPrompt = `Você é um Engenheiro de Front-end Sênior e Especialista em UI/UX.
 Abaixo está o código HTML de um MODELO BASE PROFISSIONAL DE ALTA QUALIDADE (${matchedTemplate.name}).
 
