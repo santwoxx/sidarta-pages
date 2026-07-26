@@ -1,0 +1,26 @@
+# Node & Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variáveis de Ambiente & Segredos
+.env
+.env.local
+.env.production
+*.pem
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Vercel
+.vercel/
+
+# Logs e arquivos de runtime
+*.log
+dist/
+build/

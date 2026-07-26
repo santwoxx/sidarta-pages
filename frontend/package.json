@@ -1,0 +1,12 @@
+{
+  "name": "sidarta-pages-frontend",
+  "version": "1.0.0",
+  "description": "Frontend estático do Sidarta Pages para Vercel",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx serve . -p 3000"
+  },
+  "keywords": ["vercel", "frontend", "sidarta-pages"],
+  "author": "",
+  "license": "ISC"
+}

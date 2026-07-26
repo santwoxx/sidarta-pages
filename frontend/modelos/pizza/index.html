@@ -1,0 +1,3505 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRACE. — Stone-Fired Napolitan Pizza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,400;1,700&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,400;1,700&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+  <script src="js/gsap.min.js" defer=""></script>
+  <script src="js/ScrollTrigger.min.js" defer=""></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --dark: #0C0907;
+      --ember: #D94F1E;
+      --cream: #F2EAD8;
+      --stone: #1A1512;
+      --surface: #211C18;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Space Grotesk', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--cream);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: linear-gradient(to bottom, rgba(12,9,7,0.9) 0%, transparent 100%);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    /* Hamburger toggle — hidden on desktop, shown ≤640px */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 34px; height: 34px;
+      padding: 6px 4px;
+      background: none; border: none; cursor: pointer;
+      z-index: 102;
+    }
+    .nav-toggle span {
+      display: block; height: 1.5px; width: 22px;
+      background: var(--cream); border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile drawer — hidden entirely on desktop */
+    .nav-drawer {
+      display: none;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: 0;
+      background: rgba(12,9,7,0.97);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(242,234,216,0.07);
+      transition: max-height 0.4s ease;
+    }
+    .nav-drawer.open { max-height: 320px; }
+    .nav-drawer a {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 1rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.8rem; letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.75);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(242,234,216,0.05);
+      transition: color 0.2s;
+    }
+    .nav-drawer a:last-child { border-bottom: none; }
+    .nav-drawer a:hover, .nav-drawer a:active { color: var(--ember); }
+    .nav-drawer-dash {
+      display: inline-block; width: 16px; height: 1px;
+      background: rgba(217,79,30,0.5); flex-shrink: 0;
+    }
+
+    /* ── §0 HERO ── */
+    #hero-wrap { position: relative; height: 500vh; }
+
+    #hero-sticky {
+      position: sticky; top: 0; height: 100vh;
+      overflow: hidden; background: var(--dark);
+    }
+
+    #hero-bg {
+      position: absolute; inset: 0;
+      background: url('images/brace-hero-side.jpg') center center / cover no-repeat;
+      filter: brightness(0.5);
+    }
+
+    #hero-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; display: block;
+    }
+
+    #hero-loader {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--dark); gap: 1.5rem;
+    }
+    #hero-loader-bar-wrap {
+      width: 200px; height: 1px;
+      background: rgba(242,234,216,0.12); overflow: hidden;
+    }
+    #hero-loader-bar {
+      height: 100%; width: 0%; background: var(--ember);
+      transition: width 0.08s linear;
+    }
+    #hero-loader-text {
+      font-family: var(--font-body); font-size: 0.6rem;
+      letter-spacing: 0.35em; color: rgba(242,234,216,0.35);
+      text-transform: uppercase;
+    }
+
+    /* ── HUD OVERLAY ── */
+    #hero-hud {
+      position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    }
+
+    /* Left gradient so title stays readable against the pizza */
+    #hero-hud::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(12,9,7,0.72) 0%,
+        rgba(12,9,7,0.45) 35%,
+        rgba(12,9,7,0.08) 60%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Top bar */
+    .hud-top-bar {
+      position: absolute; top: 68px; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4rem;
+    }
+    .hud-rec {
+      display: flex; align-items: center; gap: 0.55rem;
+      font-family: var(--font-body); font-size: 0.6rem;
+      letter-spacing: 0.18em; color: rgba(242,234,216,0.75);
+    }
+    .hud-rec-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ember);
+      animation: recBlink 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes recBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .hud-rec-label { color: rgba(242,234,216,0.55); margin-right: 0.15rem; }
+
+    .hud-product-label {
+      font-family: var(--font-body); font-size: 0.58rem;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(242,234,216,0.4);
+    }
+    .hud-camera-info {
+      font-family: var(--font-body); font-size: 0.58rem;
+      letter-spacing: 0.16em; color: rgba(242,234,216,0.45);
+    }
+
+    /* Corner brackets */
+    .hud-corner {
+      position: absolute; width: 26px; height: 26px;
+      border-color: rgba(242,234,216,0.3); border-style: solid; border-width: 0;
+    }
+    .hud-corner.tl { top: 116px; left: 22px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .hud-corner.tr { top: 116px; right: 22px; border-top-width: 1.5px; border-right-width: 1.5px; }
+    .hud-corner.bl { bottom: 80px; left: 22px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+    .hud-corner.br { bottom: 80px; right: 22px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+    /* Crosshair */
+    .hud-crosshair {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 100px; height: 100px;
+    }
+    .hud-ch-h {
+      position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+      background: rgba(242,234,216,0.1); transform: translateY(-50%);
+    }
+    .hud-ch-v {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+      background: rgba(242,234,216,0.1); transform: translateX(-50%);
+    }
+    .hud-ch-ring {
+      position: absolute; top: 50%; left: 50%;
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid rgba(242,234,216,0.22);
+      transform: translate(-50%,-50%);
+    }
+    .hud-ch-dot {
+      position: absolute; top: 50%; left: 50%;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(242,234,216,0.6);
+      transform: translate(-50%,-50%);
+    }
+
+    /* Scroll label */
+    .hud-scroll-wrap {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center center;
+    }
+    .hud-scroll-label {
+      font-family: var(--font-body); font-size: 0.52rem;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(242,234,216,0.3); white-space: nowrap;
+    }
+
+    /* Left circle dot */
+    .hud-side-dot {
+      position: absolute; left: 22px;
+      top: calc(50% - 80px);
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(217,79,30,0.6);
+      box-shadow: 0 0 8px rgba(217,79,30,0.4);
+    }
+
+    /* Title block */
+    .hud-title-block {
+      position: absolute; left: 4rem;
+      top: 50%; transform: translateY(-52%);
+    }
+    .hud-craft-label {
+      font-family: var(--font-body); font-size: 0.62rem;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(242,234,216,0.4); margin-bottom: 1.1rem;
+    }
+    .hud-main-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(3.8rem, 8.5vw, 8.5rem);
+      line-height: 0.88; letter-spacing: -0.02em;
+      color: var(--cream); display: block; margin-bottom: 0.12rem;
+    }
+    .hud-subtitle {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(2rem, 4.5vw, 4.5rem);
+      line-height: 0.9; letter-spacing: -0.01em;
+      color: var(--cream); margin-bottom: 2rem; display: block;
+    }
+    .hud-subtitle .em { color: var(--ember); }
+    .hud-tagline {
+      font-family: var(--font-body); font-size: 0.68rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(242,234,216,0.45);
+    }
+
+    /* Right ruler ticks */
+    .hud-ruler {
+      position: absolute; right: 14px; top: 120px; bottom: 84px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      align-items: flex-end; gap: 0;
+    }
+    .hud-tick { width: 8px; height: 1px; background: rgba(242,234,216,0.18); }
+    .hud-tick.major { width: 14px; background: rgba(242,234,216,0.32); }
+
+    /* Bottom bar */
+    .hud-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 78px; border-top: 1px solid rgba(242,234,216,0.07);
+      display: flex; align-items: center; padding: 0 4rem;
+      gap: 0;
+    }
+    .hud-bottom-left {
+      display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
+      font-family: var(--font-body); font-size: 0.58rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(242,234,216,0.55);
+    }
+    .hud-audio-bars {
+      display: flex; align-items: flex-end; gap: 2px; height: 14px;
+    }
+    .hud-audio-bar {
+      width: 2.5px; border-radius: 1px; background: var(--ember);
+      animation: audioBeat var(--dur) ease-in-out infinite alternate;
+    }
+    @keyframes audioBeat { from{height:var(--lo)} to{height:var(--hi)} }
+
+    .hud-scrubber-area {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 3rem; gap: 0.6rem;
+    }
+    .hud-sound-btn {
+      font-family: var(--font-body); font-size: 0.55rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(242,234,216,0.5); pointer-events: auto; cursor: pointer;
+      display: flex; align-items: center; gap: 0.4rem;
+      border: 1px solid rgba(242,234,216,0.18); padding: 0.3rem 0.75rem;
+      border-radius: 2px; background: transparent; transition: all 0.25s;
+    }
+    .hud-sound-btn:hover { color: var(--cream); border-color: rgba(242,234,216,0.45); }
+    .hud-scrubber-track-wrap {
+      position: relative; width: 100%; height: 1.5px;
+      background: rgba(242,234,216,0.1);
+    }
+    .hud-scrubber-fill {
+      position: absolute; left: 0; top: 0; height: 100%;
+      background: var(--ember); width: 0%;
+    }
+    .hud-scrubber-knob {
+      position: absolute; top: 50%; left: 0%;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--cream); border: 1.5px solid var(--ember);
+      transform: translate(-50%,-50%);
+    }
+    .hud-bottom-right {
+      flex-shrink: 0; font-family: var(--font-body); font-size: 0.52rem;
+      letter-spacing: 0.12em; color: rgba(242,234,216,0.38);
+      text-align: right; line-height: 1.8;
+    }
+    .hud-bottom-right .hi { color: var(--ember); }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 7rem 4rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 1;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    /* ── §1 SIGNATURE PIZZAS ── */
+    #pizzas {
+      background: var(--stone);
+    }
+
+    .pizzas-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .pizza-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pizza-card {
+      background: var(--surface);
+      border: 1px solid rgba(242,234,216,0.06);
+      overflow: hidden;
+      transition: transform 0.4s ease, border-color 0.4s;
+    }
+
+    .pizza-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(217,79,30,0.3);
+    }
+
+    .pizza-card img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.9);
+      transition: filter 0.4s;
+    }
+
+    .pizza-card:hover img { filter: brightness(1); }
+
+    .pizza-card-body {
+      padding: 1.8rem;
+    }
+
+    .pizza-card-name {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      color: var(--cream);
+    }
+
+    .pizza-card-desc {
+      font-size: 0.8rem;
+      line-height: 1.7;
+      opacity: 0.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .pizza-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pizza-price {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .btn-ember {
+      background: var(--ember);
+      color: var(--cream);
+      border: none;
+      padding: 0.65rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-ember:hover { background: #c44318; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid rgba(242,234,216,0.3);
+      padding: 0.65rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--ember);
+      color: var(--ember);
+    }
+
+    /* ── §2 CONFIGURATOR ── */
+    #configurator {
+      background: var(--dark);
+      padding: 6rem 4rem;
+    }
+
+    .config-header {
+      max-width: 1300px;
+      margin: 0 auto 3.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(242,234,216,0.08);
+    }
+
+    .config-header .section-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      font-family: var(--font-body);
+    }
+
+    .config-header h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1;
+      color: var(--cream);
+      margin-top: 0.4rem;
+    }
+
+    .config-header h2 .accent {
+      color: var(--ember);
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      gap: 3rem;
+      align-items: start;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    /* LEFT: steps panel */
+    .config-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .config-step-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      font-family: var(--font-body);
+      margin-bottom: 1.2rem;
+    }
+
+    /* Base tabs — 3-column, large cover image */
+    .base-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+    }
+
+    .base-tab {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(242,234,216,0.08);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .base-tab:hover { border-color: rgba(242,234,216,0.3); }
+
+    .base-tab.active {
+      border-color: var(--ember);
+      background: rgba(217,79,30,0.07);
+    }
+
+    .base-tab-cover {
+      position: relative;
+      height: 160px;
+      width: 100%;
+      overflow: hidden;
+      background: var(--stone);
+    }
+
+    .base-tab-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .base-tab:hover .base-tab-cover img { transform: scale(1.06); }
+
+    .base-tab-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--surface) 0%, transparent 60%);
+      opacity: 0.65;
+    }
+
+    .base-tab-size {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ember);
+      z-index: 2;
+    }
+
+    .base-tab-body {
+      padding: 0.65rem 0.8rem;
+      text-align: left;
+    }
+
+    .base-tab-name {
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.55);
+      font-family: var(--font-body);
+    }
+
+    .base-tab-desc {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: rgba(242,234,216,0.3);
+      margin-top: 0.15rem;
+      font-family: var(--font-body);
+    }
+
+    /* Toppings — 2-column, thumbnail + name + price */
+    .toppings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+    }
+
+    .topping-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(242,234,216,0.08);
+      background: var(--surface);
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+      position: relative;
+    }
+
+    .topping-toggle:hover { border-color: rgba(217,79,30,0.3); }
+
+    .topping-toggle.active {
+      border-color: var(--ember);
+      background: rgba(217,79,30,0.06);
+    }
+
+    .topping-thumb-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 0.6rem;
+    }
+
+    .topping-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .topping-toggle:hover .topping-thumb-wrap img { transform: scale(1.1); }
+
+    .topping-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topping-name {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.55);
+      font-family: var(--font-body);
+      line-height: 1.4;
+    }
+
+    .topping-price {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(242,234,216,0.35);
+      font-family: var(--font-body);
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+
+    /* RIGHT: preview card (image + price box) */
+    .config-right {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(242,234,216,0.08);
+      background: var(--surface);
+      position: sticky;
+      top: 5rem;
+    }
+
+    .config-preview {
+      position: relative;
+      min-height: 380px;
+      overflow: hidden;
+    }
+
+    .config-preview img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .config-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--surface) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .price-summary {
+      padding: 1.5rem 2rem 0;
+    }
+
+    .price-rows-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.55);
+      font-family: var(--font-body);
+      border-bottom: 1px solid rgba(242,234,216,0.06);
+    }
+
+    .price-row:last-child { border-bottom: none; }
+
+    .price-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 1.25rem 2rem 0;
+    }
+
+    .price-total-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      font-family: var(--font-body);
+    }
+
+    #total-price {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--ember);
+      line-height: 1;
+    }
+
+    .config-order-btn {
+      margin: 1.25rem 2rem 2rem;
+      width: calc(100% - 4rem);
+      padding: 1.1rem;
+      background: var(--ember);
+      border: none;
+      border-radius: 0.75rem;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dark);
+      cursor: pointer;
+      transition: filter 0.3s, transform 0.15s;
+    }
+
+    .config-order-btn:hover { filter: brightness(1.12); }
+    .config-order-btn:active { transform: scale(0.98); }
+
+    /* ── SIZE TABS (identical structure to base-tabs) ── */
+    .size-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+    }
+
+    /* SIZE SVG cover — pizza ghost background + SVG on top */
+    .size-svg-cover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--stone);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    /* dark overlay — pizza barely a ghost, circles stay dominant */
+    .size-svg-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(12,9,7,0.88);
+    }
+
+    .size-tabs .base-tab.active .size-svg-cover::before {
+      background: rgba(12,9,7,0.82);
+    }
+
+    .size-svg {
+      width: 100%;
+      height: 100%;
+      padding: 8px;
+      overflow: visible;
+      position: relative;
+      z-index: 1;
+      /* steady ambient glow on all circles */
+      filter: drop-shadow(0 0 6px rgba(217,79,30,0.25));
+    }
+
+    /* Active card: pulsing ember glow */
+    .size-tabs .base-tab.active .size-svg {
+      animation: sizePulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes sizePulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(217,79,30,0.55)) drop-shadow(0 0 3px rgba(217,79,30,0.4)); }
+      50%       { filter: drop-shadow(0 0 20px rgba(217,79,30,0.85)) drop-shadow(0 0 7px rgba(217,79,30,0.6)); }
+    }
+
+    /* SIZE overlay on preview image */
+    .config-size-badge {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .config-size-badge.visible { opacity: 1; }
+
+    .config-size-badge span {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 40px rgba(217,79,30,0.6), 0 2px 20px rgba(0,0,0,0.8);
+      mix-blend-mode: normal;
+    }
+
+    /* flying pizza image from §1 to configurator */
+    .pizza-fly-img {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      border-radius: 0.75rem;
+      object-fit: cover;
+      will-change: transform, opacity, width, height;
+    }
+
+    /* Fly clone */
+    .fly-clone-img {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      object-fit: cover;
+      border-radius: 50%;
+      will-change: transform, opacity;
+    }
+
+    .fly-clone {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 0.72rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      background: var(--ember);
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 0.35rem;
+      box-shadow: 0 0 12px rgba(217,79,30,0.6);
+      white-space: nowrap;
+    }
+
+    /* ── §3 MARGHERITA HERO ── */
+    #margherita {
+      background: var(--stone);
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .split-img { width: 100%; object-fit: cover; }
+
+    .split-text { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .split-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3rem, 6vw, 6rem);
+      line-height: 0.9;
+      color: var(--cream);
+    }
+
+    .split-sub {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      opacity: 0.5;
+      max-width: 380px;
+    }
+
+    .split-price {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    /* ── §4 STATS ── */
+    #stats {
+      background: var(--dark);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-top-rule {
+      height: 1px;
+      width: 100%;
+      background: rgba(242,234,216,0.08);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .stat-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 5rem 3rem;
+      border-right: 1px solid rgba(242,234,216,0.08);
+    }
+
+    .stat-card:last-child {
+      border-right: none;
+    }
+
+    .stat-card-glow {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.7s;
+    }
+
+    .stat-card:hover .stat-card-glow { opacity: 1; }
+
+    .stat-card-glow::after {
+      content: '';
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 12rem; height: 12rem;
+      border-radius: 50%;
+      background: rgba(217,79,30,0.1);
+      filter: blur(80px);
+      transform: translate(-50%,-50%);
+    }
+
+    .stat-num-label {
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      letter-spacing: 0.35em;
+      color: rgba(242,234,216,0.35);
+      margin-bottom: 0;
+    }
+
+    .stat-number-wrap {
+      margin: 1.5rem 0;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3.5rem, 7vw, 8rem);
+      color: var(--ember);
+      line-height: 1;
+      display: block;
+      text-shadow: 0 0 60px rgba(217,79,30,0.35);
+    }
+
+    .stat-label-group {}
+
+    .stat-label {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cream);
+      display: block;
+      white-space: pre-line;
+    }
+
+    .stat-desc {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      line-height: 1.7;
+      color: rgba(242,234,216,0.4);
+      margin-top: 0.75rem;
+    }
+
+    /* ── §5 THE STONE ── */
+    #the-stone {
+      position: relative;
+      padding: 0;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+    }
+
+    @keyframes ember-pulse {
+      0%, 100% { opacity: 0.10; }
+      50%       { opacity: 0.38; }
+    }
+    @keyframes ember-pulse-2 {
+      0%, 100% { opacity: 0.08; }
+      50%       { opacity: 0.28; }
+    }
+
+    .stone-bg {
+      position: absolute;
+      inset: 0;
+      background: url('images/stone-oven-interior.jpg') center center / cover no-repeat;
+      filter: brightness(0.32);
+    }
+
+    .stone-glow {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .stone-glow::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 25% 65%, rgba(217,79,30,0.6) 0%, transparent 70%);
+      animation: ember-pulse 2.8s ease-in-out infinite;
+    }
+
+    .stone-glow::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 40% 35% at 55% 50%, rgba(240,120,20,0.4) 0%, transparent 60%);
+      animation: ember-pulse-2 3.5s ease-in-out infinite 0.8s;
+    }
+
+    .stone-content {
+      position: relative;
+      z-index: 2;
+      padding: 7rem 4rem;
+      max-width: 700px;
+    }
+
+    .stone-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3.5rem, 8vw, 8rem);
+      line-height: 0.85;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+
+    .stone-desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      opacity: 0.6;
+      max-width: 480px;
+    }
+
+    /* ── §6 TOPPINGS / THE FIRE (Marquee) ── */
+    #toppings {
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 0 2rem;
+    }
+
+    .toppings-header {
+      padding: 0 4rem;
+      margin-bottom: 3.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(242,234,216,0.08);
+      padding-bottom: 1.5rem;
+    }
+
+    .toppings-header-left {}
+
+    .toppings-header-right {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: rgba(242,234,216,0.4);
+      max-width: 280px;
+      text-align: right;
+    }
+
+    .marquee-wrap {
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      animation: marquee 28s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-track.reverse {
+      animation-direction: reverse;
+      animation-duration: 22s;
+    }
+
+    .marquee-track:hover { animation-play-state: paused; }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      color: var(--cream);
+      opacity: 0.7;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .marquee-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--ember);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── §7 THE SOURCE / CRAFT GRID ── */
+    #source {
+      background: var(--dark);
+      padding: 4rem 4rem 6rem;
+    }
+
+    .source-section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(242,234,216,0.08);
+      padding-bottom: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .source-section-head-right {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: rgba(242,234,216,0.4);
+      max-width: 260px;
+      text-align: right;
+    }
+
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .craft-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      height: 13rem;
+      cursor: pointer;
+    }
+
+    .craft-card.wide {
+      grid-column: span 2;
+    }
+
+    .craft-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.7s ease-out;
+    }
+
+    .craft-card:hover img { transform: scale(1.05); }
+
+    .craft-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+      opacity: 0.8;
+      transition: opacity 0.5s;
+    }
+
+    .craft-card:hover .craft-card-overlay { opacity: 1; }
+
+    .craft-card-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 1rem 1.25rem;
+    }
+
+    .craft-card-label {
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      letter-spacing: 0.2em;
+      color: var(--ember);
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .craft-card-sub {
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      color: rgba(242,234,216,0.55);
+    }
+
+    .craft-card-corner {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1rem;
+      height: 1rem;
+      border-top: 1px solid rgba(217,79,30,0.4);
+      border-right: 1px solid rgba(217,79,30,0.4);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .craft-card:hover .craft-card-corner { opacity: 1; }
+
+    /* ── §8 THE STORY ── */
+    #story {
+      background: var(--dark);
+      padding: 7rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #story::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      right: 0; top: 33%;
+      width: 600px; height: 600px;
+      transform: translateX(33%);
+      border-radius: 50%;
+      background: rgba(217,79,30,0.05);
+      filter: blur(150px);
+    }
+
+    #story::after {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 400px; height: 400px;
+      transform: translateX(-33%);
+      border-radius: 50%;
+      background: rgba(217,79,30,0.04);
+      filter: blur(120px);
+    }
+
+    .story-head {
+      max-width: 1300px;
+      margin: 0 auto 3.5rem;
+      border-bottom: 1px solid rgba(242,234,216,0.08);
+      padding-bottom: 3rem;
+      text-align: center;
+    }
+
+    .story-head-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.688rem;
+      letter-spacing: 0.45em;
+      color: rgba(242,234,216,0.4);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .story-head-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      line-height: 1;
+      color: var(--cream);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    .story-head-title .story-num {
+      color: var(--ember);
+    }
+
+    .story-head-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      font-family: var(--font-display);
+      font-size: 0.688rem;
+      letter-spacing: 0.25em;
+      color: rgba(242,234,216,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .story-head-link:hover { color: var(--ember); }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .story-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(242,234,216,0.08);
+      background: var(--surface);
+      padding: 1.75rem;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .story-card:hover {
+      border-color: rgba(217,79,30,0.45);
+      box-shadow: 0 0 40px rgba(217,79,30,0.1);
+      transform: translateY(-3px);
+    }
+
+    .story-card-hover-glow {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s;
+      background: radial-gradient(80% 60% at 50% 0%, rgba(217,79,30,0.07) 0%, transparent 70%);
+    }
+
+    .story-card:hover .story-card-hover-glow { opacity: 1; }
+
+    .story-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .story-card-tag {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid rgba(217,79,30,0.3);
+      background: rgba(217,79,30,0.08);
+      padding: 0.25rem 0.75rem;
+      font-family: var(--font-body);
+      font-size: 0.563rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ember);
+      transition: all 0.3s;
+    }
+
+    .story-card:hover .story-card-tag {
+      background: var(--ember);
+      color: var(--dark);
+    }
+
+    .story-card-ghost-num {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 3rem;
+      line-height: 1;
+      color: rgba(242,234,216,0.05);
+      transition: color 0.3s;
+      user-select: none;
+    }
+
+    .story-card:hover .story-card-ghost-num {
+      color: rgba(217,79,30,0.12);
+    }
+
+    .story-card-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.25rem;
+      line-height: 1.3;
+      color: var(--cream);
+      margin-bottom: 0;
+    }
+
+    .story-card-title .accent-word {
+      color: var(--ember);
+      transition: filter 0.3s;
+    }
+
+    .story-card:hover .story-card-title .accent-word {
+      filter: drop-shadow(0 0 14px rgba(217,79,30,0.6));
+    }
+
+    .story-card-excerpt {
+      font-size: 0.8rem;
+      line-height: 1.75;
+      color: rgba(242,234,216,0.45);
+      margin-top: 1rem;
+      flex: 1;
+    }
+
+    .story-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(242,234,216,0.07);
+      padding-top: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .story-card-read-time {
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      letter-spacing: 0.25em;
+      color: rgba(242,234,216,0.3);
+      text-transform: uppercase;
+    }
+
+    .story-card-date {
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      letter-spacing: 0.25em;
+      color: rgba(242,234,216,0.3);
+    }
+
+    .story-card-arrow {
+      color: rgba(242,234,216,0.25);
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .story-card:hover .story-card-arrow {
+      color: var(--ember);
+      transform: translate(2px, -2px);
+    }
+
+    .story-card-bottom-line {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--ember);
+      transition: width 0.5s;
+    }
+
+    .story-card:hover .story-card-bottom-line { width: 100%; }
+
+    /* ── §9 RESERVE ── */
+    /* ── RESERVE ── */
+    #reserve {
+      background: var(--stone);
+      padding: 7rem 3rem 10rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* corner accents like Prime v3 */
+    #reserve::before, #reserve::after {
+      content: '';
+      position: absolute;
+      width: 56px; height: 56px;
+      border-color: rgba(217,79,30,0.3);
+      border-style: solid;
+    }
+    #reserve::before { top: 3.5rem; left: 3.5rem; border-width: 1.5px 0 0 1.5px; }
+    #reserve::after  { bottom: 3.5rem; right: 3.5rem; border-width: 0 1.5px 1.5px 0; }
+
+    /* glow blobs */
+    #reserve .res-blob-t {
+      pointer-events: none;
+      position: absolute;
+      left: 50%; top: 0;
+      width: 700px; height: 700px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(217,79,30,0.07);
+      filter: blur(180px);
+    }
+    #reserve .res-blob-b {
+      pointer-events: none;
+      position: absolute;
+      right: 0; bottom: 0;
+      width: 400px; height: 400px;
+      transform: translate(33%, 33%);
+      border-radius: 50%;
+      background: rgba(217,79,30,0.04);
+      filter: blur(120px);
+    }
+
+    .reserve-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Centered header block */
+    .reserve-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .reserve-header .section-eyebrow {
+      color: var(--ember);
+      letter-spacing: 0.45em;
+    }
+    .reserve-header h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(3rem, 9vw, 8rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-top: 1.25rem;
+    }
+    .reserve-header h2 span { color: var(--ember); }
+    .reserve-header p {
+      margin: 1.5rem auto 0;
+      max-width: 26rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      opacity: 0.45;
+    }
+    .reserve-header-divider {
+      width: 80px; height: 1px;
+      background: rgba(217,79,30,0.4);
+      margin: 2rem auto 0;
+    }
+
+    /* Outer card */
+    .reserve-card {
+      border: 1px solid rgba(242,234,216,0.1);
+      background: rgba(12,9,7,0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      padding: 3rem;
+    }
+
+    /* Inner 2-col grid */
+    .reserve-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    /* Column groups */
+    .reserve-col { display: flex; flex-direction: column; gap: 2rem; }
+
+    /* Step labels */
+    .reserve-step-label {
+      font-family: var(--font-display);
+      font-size: 0.625rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 1rem;
+    }
+
+    /* Calendar */
+    .cal-wrap {
+      border: 1px solid rgba(242,234,216,0.1);
+      background: var(--surface);
+      border-radius: 1rem;
+      padding: 1.25rem;
+    }
+
+    .cal-month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .cal-month-nav button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(242,234,216,0.1);
+      background: none;
+      color: rgba(242,234,216,0.4);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .cal-month-nav button:hover {
+      border-color: var(--ember);
+      color: var(--ember);
+    }
+
+    .cal-month-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .cal-wd {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.625rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      padding: 0.25rem 0;
+    }
+
+    .cal-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      color: rgba(242,234,216,0.5);
+    }
+    .cal-day:hover:not(.past):not(.empty) {
+      background: var(--surface);
+      color: var(--cream);
+    }
+    .cal-day.empty { background: transparent; cursor: default; border: none; }
+    .cal-day.past { opacity: 0.2; cursor: not-allowed; }
+    .cal-day.today {
+      border-color: var(--ember);
+      color: var(--ember);
+    }
+    .cal-day.selected {
+      background: var(--ember);
+      border-color: var(--ember);
+      color: white;
+    }
+
+    /* Party stepper */
+    .party-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      border: 1px solid rgba(242,234,216,0.1);
+      background: var(--surface);
+      border-radius: 1rem;
+      padding: 0 1.5rem;
+    }
+
+    .party-btn {
+      background: none;
+      border: none;
+      color: rgba(242,234,216,0.4);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .party-btn:hover { color: var(--ember); }
+
+    .party-count-wrap { text-align: center; }
+    .party-count {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.875rem;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .party-guests-label {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.4);
+      margin-left: 0.5rem;
+    }
+
+    /* Time slots */
+    .time-service-label {
+      font-family: var(--font-display);
+      font-size: 0.5625rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.3);
+      margin-bottom: 0.5rem;
+    }
+    .time-service-label + .time-slots { margin-bottom: 0.25rem; }
+
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+
+    .time-slot {
+      border: 1px solid rgba(242,234,216,0.1);
+      background: var(--surface);
+      border-radius: 0.75rem;
+      padding: 0.875rem 0.25rem;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: rgba(242,234,216,0.5);
+    }
+    .time-slot:hover {
+      border-color: rgba(217,79,30,0.5);
+      color: var(--cream);
+    }
+    .time-slot.selected {
+      background: var(--ember);
+      border-color: var(--ember);
+      color: white;
+    }
+
+    /* Name/email inputs */
+    .res-fields { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .res-input {
+      background: var(--surface);
+      border: 1px solid rgba(242,234,216,0.1);
+      border-radius: 1rem;
+      color: var(--cream);
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      padding: 1rem 1.25rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .res-input:focus {
+      border-color: var(--ember);
+      box-shadow: 0 0 0 3px rgba(217,79,30,0.15);
+    }
+    .res-input::placeholder { color: rgba(242,234,216,0.25); }
+
+    /* Summary line */
+    .reserve-summary {
+      font-family: var(--font-display);
+      font-size: 0.625rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.35);
+      min-height: 1em;
+      text-align: center;
+    }
+
+    /* Reserve button — full width under card */
+    #reserve-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      background: var(--ember);
+      color: white;
+      border: none;
+      cursor: not-allowed;
+      opacity: 0.3;
+      transition: opacity 0.3s;
+    }
+    #reserve-btn.active {
+      opacity: 1;
+      cursor: pointer;
+    }
+    #reserve-btn.active:hover {
+      background: #c44318;
+    }
+
+    .reserve-fine-print {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.5625rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(242,234,216,0.25);
+      margin-top: 1rem;
+    }
+
+    /* Confirmation */
+    .reserve-confirm {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .reserve-confirm.show { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+
+    .confirm-check {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--ember);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(242,234,216,0.07);
+      padding: 4rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream);
+      opacity: 0.35;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .footer-links a:hover { opacity: 0.8; }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .footer-tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      opacity: 0.25;
+      margin-bottom: 0.4rem;
+    }
+
+    .footer-copy {
+      font-size: 0.65rem;
+      opacity: 0.2;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      section { padding: 5rem 2rem; }
+      .pizza-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .config-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .config-img-wrap { position: static; }
+      /* preview + live price first, controls below (like Prime v3) */
+      .config-right { order: 1; position: static; top: auto; }
+      .config-panel { order: 2; }
+      .split-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .story-grid { grid-template-columns: 1fr; }
+      .reserve-grid { grid-template-columns: 1fr; }
+      .reserve-img { display: none; }
+      footer { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
+      .footer-right { text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+      .toppings-grid { grid-template-columns: 1fr; }
+      .base-tabs { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      /* ── NAV ── */
+      nav { padding: 0.9rem 1.25rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .nav-drawer { display: flex; }
+
+      /* ── SECTIONS ── */
+      section { padding: 3.5rem 1.25rem; }
+      /* id-selectors below override the generic section padding above (higher
+         specificity), so they must be re-stated for mobile or they keep desktop
+         side-padding and overflow the viewport */
+      #configurator { padding: 3.5rem 1.25rem; }
+      #story { padding: 4rem 1.25rem; }
+      #source { padding: 3rem 1.25rem 4rem; }
+      #reserve { padding: 4rem 1.25rem 6rem; }
+      #toppings { padding: 4rem 0 2rem; }
+      .toppings-header { padding: 0 1.25rem; }
+      .stone-content { padding: 4rem 1.5rem; }
+      /* let grid/flex children shrink so cards never overflow */
+      .config-grid > * { min-width: 0; }
+
+      /* ── HERO HUD ── */
+      .hud-top-bar { padding: 0 1rem; }
+      .hud-camera-info { display: none; }
+      .hud-product-label { font-size: 0.5rem; letter-spacing: 0.1em; }
+      .hud-title-block { left: 1.25rem; }
+      .hud-main-title { font-size: clamp(3rem, 17vw, 4.5rem); }
+      .hud-craft-label { font-size: 0.5rem; }
+      .hud-subtitle { font-size: 0.6rem; }
+      .hud-tagline { font-size: 0.55rem; }
+      .hud-bottom { padding: 0 1rem; }
+      .hud-bottom-right { display: none; }
+      .hud-scrubber-area { display: none; }
+      .hud-ruler { display: none; }
+      .hud-scroll-wrap { display: none; }
+      .hud-side-dot { display: none; }
+
+      /* ── PIZZA GRID ── */
+      .pizza-grid { max-width: 100%; }
+      .pizza-card img { height: 220px; object-fit: cover; }
+
+      /* ── CONFIGURATOR ── */
+      .config-right { position: static; }
+      .config-preview { min-height: 260px; }
+      .config-order-btn { margin: 1.1rem 1.25rem 1.5rem; width: calc(100% - 2.5rem); }
+      .price-summary { padding: 1.25rem 1.25rem 0; }
+      .price-total-row { padding: 1rem 1.25rem 0; }
+      .size-tabs { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .base-tab-cover { height: 96px; }
+      .base-tab-size { font-size: 1.3rem; }
+      .toppings-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+      .topping-toggle { padding: 0.6rem 0.7rem; gap: 0.6rem; }
+      .topping-thumb-wrap { width: 50px; height: 50px; }
+      .topping-name { font-size: 0.55rem; letter-spacing: 0.12em; }
+      .topping-price { font-size: 0.7rem; }
+
+      /* ── STATS — distinct bordered cards with gap (like Prime v3) ── */
+      .stats-grid { gap: 0.6rem; padding: 0 1.25rem; }
+      .stat-card {
+        border: 1px solid rgba(242,234,216,0.1) !important;
+        border-radius: 1rem;
+        padding: 1.75rem 1.25rem;
+      }
+      .stat-number { font-size: clamp(2.5rem, 14vw, 4rem); }
+
+      /* ── TOPPINGS SECTION HEADER ── */
+      .toppings-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+      .toppings-header-right { font-size: 0.8rem; text-align: left; max-width: none; }
+      /* dense, clearly-moving ticker on mobile (was huge + sparse → looked cut off) */
+      .marquee-item { font-size: 1.1rem; gap: 1.3rem; }
+      .marquee-track { gap: 1.3rem; }
+      .marquee-wrap { margin-bottom: 1rem; }
+
+      /* ── SOURCE / CRAFT ── */
+      .source-section-head { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+      .source-section-head-right { font-size: 0.8rem; text-align: left; max-width: none; }
+      .craft-grid { grid-template-columns: 1fr; }
+      .craft-card.wide { grid-column: span 1; }
+      .craft-card { height: 240px; }
+
+      /* ── STORY ── */
+      .story-head { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+
+      /* ── RESERVE ── */
+      .reserve-cols { grid-template-columns: 1fr; gap: 2rem; }
+      .reserve-card { padding: 1.5rem 1.25rem; }
+      .time-slots { grid-template-columns: repeat(3, 1fr); }
+      .res-input { font-size: 16px; } /* prevent iOS zoom on focus */
+
+      /* ── FOOTER ── */
+      footer { padding: 2.5rem 1.25rem; }
+      .footer-links { flex-wrap: wrap; gap: 1rem 1.5rem; justify-content: center; }
+    }
+
+    /* ── LIGHT THEME v2 ──
+       Strategie: Nur page-BG wird Cream. --stone + --surface bleiben dunkel.
+       Dunkle Sections/Cards behalten Original-Cream-Text via scoped var-Override.
+       Helle Sections kriegen dunklen Text. Hero bleibt komplett unverändert.
+    ── */
+    html.light {
+      --dark:  #F7F2EA;   /* page background → warm Cream */
+      --cream: #1E120A;   /* text auf hellem BG → dunkelbraun */
+      /* --stone und --surface bleiben dunkel — kein Override */
+    }
+
+    /* Für alle dark-BG-Elemente: cream zurück auf Original damit Text lesbar bleibt */
+    html.light #hero-wrap,
+    html.light #pizzas,
+    html.light #margherita,
+    html.light .pizza-card,
+    html.light .base-tab,
+    html.light .topping-toggle,
+    html.light .config-right,
+    html.light .story-card,
+    html.light .reserve-card,
+    html.light footer { --cream: #F2EAD8; }
+
+    /* ── NAV ── */
+    html.light nav {
+      background: linear-gradient(to bottom, rgba(247,242,234,0.96) 0%, transparent 100%);
+    }
+    html.light .nav-drawer {
+      background: rgba(247,242,234,0.97);
+      border-top-color: rgba(30,18,10,0.08);
+    }
+    html.light .nav-drawer a { color: rgba(30,18,10,0.65); border-bottom-color: rgba(30,18,10,0.05); }
+
+    /* ── HERO: kein Overlay, alles original ── */
+    html.light #hero-hud::before { background: none; }
+
+    /* ── §2 CONFIGURATOR (heller BG) ── */
+    html.light .config-header { border-bottom-color: rgba(30,18,10,0.08); }
+    html.light #configurator .section-eyebrow { color: var(--ember); }
+    /* Aktiver Tab bleibt dunkel — transparent rgba(ember,0.07) auf Cream-BG würde Cream-Body zeigen */
+    html.light .base-tab.active { background: var(--surface); }
+
+    /* ── §4 STATS (heller BG) ── */
+    html.light .stats-top-rule { background: rgba(30,18,10,0.09); }
+    html.light .stat-card { border-right-color: rgba(30,18,10,0.08); }
+    html.light .stat-num-label { color: rgba(30,18,10,0.28); }
+    html.light .stat-desc { color: rgba(30,18,10,0.42); }
+
+    /* ── §6 TOPPINGS (heller BG) ── */
+    html.light .toppings-header { border-bottom-color: rgba(30,18,10,0.08); }
+    html.light .toppings-header-right { color: rgba(30,18,10,0.42); }
+
+    /* ── §7 SOURCE (heller BG) ── */
+    html.light .source-section-head { border-bottom-color: rgba(30,18,10,0.08); }
+    html.light .source-section-head-right { color: rgba(30,18,10,0.42); }
+
+    /* ── §8 STORY (heller BG, aber Cards dunkel) ── */
+    html.light .story-head { border-bottom-color: rgba(30,18,10,0.08); }
+    html.light .story-head-eyebrow { color: rgba(30,18,10,0.38); }
+    html.light .story-head-link { color: rgba(30,18,10,0.35); }
+
+    /* ── §9 RESERVE (heller BG, Card dunkel) ── */
+    html.light .reserve-header p { color: rgba(30,18,10,0.45); }
+    html.light .reserve-header-divider { background: rgba(30,18,10,0.08); }
+
+    /* ── THEME TOGGLE BUTTON ──
+       Dark mode → Button HELL (Cream BG + dunkler Text) → zeigt "LIGHT"
+       Light mode → Button DUNKEL (Surface BG + heller Text) → zeigt "DARK"
+    ── */
+    #theme-toggle {
+      position: fixed;
+      bottom: 1.6rem;
+      right: 10.5rem;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: #F2EAD8;                   /* hell im Dark Mode */
+      border: 1px solid rgba(242,234,216,0.4);
+      color: #1A0F06;                         /* dunkler Text im Dark Mode */
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.1rem;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color 0.25s, background 0.25s, color 0.25s;
+    }
+    #theme-toggle:focus { outline: none; }
+    #theme-toggle:focus-visible { outline: 1px solid var(--ember); }
+    #theme-toggle:hover { border-color: var(--ember); }
+    /* Light Mode → Button dunkel */
+    html.light #theme-toggle {
+      background: #211C18;
+      color: #F2EAD8;
+      border-color: rgba(242,234,216,0.18);
+    }
+    html.light #theme-toggle:hover { border-color: var(--ember); }
+    #theme-toggle-icon { font-size: 0.85rem; line-height: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="#" class="nav-logo">BRACE.</a>
+    <ul class="nav-links">
+      <li><a href="#pizzas">Menu</a></li>
+      <li><a href="#configurator">Build</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-drawer" id="nav-drawer">
+      <a href="#pizzas"><span class="nav-drawer-dash"></span>Menu</a>
+      <a href="#configurator"><span class="nav-drawer-dash"></span>Build</a>
+      <a href="#story"><span class="nav-drawer-dash"></span>Story</a>
+      <a href="#reserve"><span class="nav-drawer-dash"></span>Reserve</a>
+    </div>
+  </nav>
+
+  <!-- THEME TOGGLE -->
+  <button id="theme-toggle" aria-label="Toggle light/dark theme">
+    <span id="theme-toggle-icon">◑</span>
+    <span id="theme-toggle-label">LIGHT</span>
+  </button>
+
+  <!-- §0 HERO -->
+  <div id="hero-wrap">
+    <div id="hero-sticky">
+      <div id="hero-bg"></div>
+      <canvas id="hero-canvas"></canvas>
+
+      <!-- LOADER -->
+      <div id="hero-loader">
+        <div id="hero-loader-bar-wrap"><div id="hero-loader-bar"></div></div>
+        <span id="hero-loader-text">Loading</span>
+      </div>
+
+      <!-- CAMERA HUD OVERLAY -->
+      <div id="hero-hud">
+
+        <!-- TOP BAR -->
+        <div class="hud-top-bar">
+          <div class="hud-rec">
+            <div class="hud-rec-dot"></div>
+            <span class="hud-rec-label">REC</span>
+            <span id="hud-timecode">00:00:00:00</span>
+          </div>
+          <div class="hud-product-label">BRACE. // STONE-FIRED PIZZA</div>
+          <div class="hud-camera-info">4K �·� 24FPS �·� F2.8 �·� 1/50</div>
+        </div>
+
+        <!-- CORNER BRACKETS -->
+        <div class="hud-corner tl"></div>
+        <div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div>
+        <div class="hud-corner br"></div>
+
+        <!-- CENTER CROSSHAIR -->
+        <div class="hud-crosshair">
+          <div class="hud-ch-h"></div>
+          <div class="hud-ch-v"></div>
+          <div class="hud-ch-ring"></div>
+          <div class="hud-ch-dot"></div>
+        </div>
+
+        <!-- LEFT SCROLL LABEL -->
+        <div class="hud-scroll-wrap">
+          <span class="hud-scroll-label">Scroll to Explore</span>
+        </div>
+        <div class="hud-side-dot"></div>
+
+        <!-- TITLE BLOCK (left) -->
+        <div class="hud-title-block">
+          <p class="hud-craft-label">STONE-FIRED // CRAFT No.01</p>
+          <span class="hud-main-title">BRACE.</span>
+          <span class="hud-subtitle"><span class="em">// </span>STONE-FIRED</span>
+          <p class="hud-tagline">Napolitan �·� Fermented �·� Volcanic</p>
+        </div>
+
+        <!-- RIGHT RULER -->
+        <div class="hud-ruler" id="hud-ruler"></div>
+
+        <!-- BOTTOM BAR -->
+        <div class="hud-bottom">
+          <div class="hud-bottom-left">
+            <span>01 · OVERVIEW</span>
+            <div class="hud-audio-bars">
+              <div class="hud-audio-bar" style="--dur:0.7s;--lo:3px;--hi:12px"></div>
+              <div class="hud-audio-bar" style="--dur:0.5s;--lo:5px;--hi:14px"></div>
+              <div class="hud-audio-bar" style="--dur:0.9s;--lo:2px;--hi:10px"></div>
+              <div class="hud-audio-bar" style="--dur:0.6s;--lo:6px;--hi:13px"></div>
+              <div class="hud-audio-bar" style="--dur:0.8s;--lo:3px;--hi:11px"></div>
+            </div>
+          </div>
+          <div class="hud-scrubber-area">
+            <button class="hud-sound-btn">⊙ SOUND ON</button>
+            <div class="hud-scrubber-track-wrap">
+              <div class="hud-scrubber-fill" id="hud-scrubber-fill"></div>
+              <div class="hud-scrubber-knob" id="hud-scrubber-knob"></div>
+            </div>
+          </div>
+          <div class="hud-bottom-right">
+            ISO 800 �·� NB S600K �·� SECTION 01<br>
+            FRAME <span id="hud-frame-num">000</span> �·� <span class="hi">▲ SCRUB ACTIVE</span>
+          </div>
+        </div>
+
+      </div><!-- /hero-hud -->
+
+    </div>
+  </div>
+
+  <!-- §1 SIGNATURE PIZZAS -->
+  <section id="pizzas">
+    <div class="pizzas-header">
+      <p class="section-eyebrow">Our Selection</p>
+      <h2 class="section-title">Signature Pizzas</h2>
+    </div>
+    <div class="pizza-grid">
+      <div class="pizza-card" data-base="Margherita" data-img="assets/pizzas/margherita-verace.jpg">
+        <img src="images/margherita-verace.jpg" alt="Margherita Verace">
+        <div class="pizza-card-body">
+          <div class="pizza-card-name">Margherita Verace</div>
+          <p class="pizza-card-desc">San Marzano DOP, Fior di Latte, fresh basil, extra virgin olive oil. Our founding pizza — nothing more, nothing less.</p>
+          <div class="pizza-card-footer">
+            <span class="pizza-price">$18</span>
+            <button class="btn-ember pizza-order-btn">Order</button>
+          </div>
+        </div>
+      </div>
+      <div class="pizza-card" data-base="Bianca" data-img="assets/pizzas/prosciutto-burrata.jpg">
+        <img src="images/prosciutto-burrata.jpg" alt="Prosciutto e Burrata">
+        <div class="pizza-card-body">
+          <div class="pizza-card-name">Prosciutto e Burrata</div>
+          <p class="pizza-card-desc">24-month Prosciutto di Parma, hand-pulled Burrata, wild rocket, aged Parmigiano Reggiano.</p>
+          <div class="pizza-card-footer">
+            <span class="pizza-price">$26</span>
+            <button class="btn-ember pizza-order-btn">Order</button>
+          </div>
+        </div>
+      </div>
+      <div class="pizza-card" data-base="Imperiale" data-img="assets/pizzas/tartufo-nero.jpg">
+        <img src="images/tartufo-nero.jpg" alt="Tartufo Nero">
+        <div class="pizza-card-body">
+          <div class="pizza-card-name">Tartufo Nero</div>
+          <p class="pizza-card-desc">Black truffle shavings, Stracciatella, truffle cream base, Parmigiano, fresh thyme. Our most indulgent creation.</p>
+          <div class="pizza-card-footer">
+            <span class="pizza-price">$34</span>
+            <button class="btn-ember pizza-order-btn">Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §2 CONFIGURATOR -->
+  <section id="configurator">
+    <!-- Header -->
+    <div class="config-header">
+      <p class="section-eyebrow">Interactive // Custom Build</p>
+      <h2><span class="accent">// 02.</span> Build Your Brace</h2>
+    </div>
+
+    <div class="config-grid">
+      <!-- LEFT: Control Panel -->
+      <div class="config-panel">
+
+        <!-- Step 1: Choose Size -->
+        <div>
+          <p class="config-step-label">Step 1 · Choose Size</p>
+          <div class="size-tabs">
+            <button class="base-tab active" data-size="Piccola" data-cm="26" data-price="0">
+              <div class="base-tab-cover size-svg-cover">
+                <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="size-svg">
+                  <defs>
+                    <radialGradient id="glowS" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="rgba(217,79,30,0.18)"></stop>
+                      <stop offset="100%" stop-color="rgba(217,79,30,0)"></stop>
+                    </radialGradient>
+                  </defs>
+                  <circle cx="80" cy="80" r="56" fill="url(#glowS)"></circle>
+                  <circle cx="80" cy="80" r="56" fill="none" stroke="rgba(217,79,30,0.22)" stroke-width="0.8" stroke-dasharray="4 3"></circle>
+                  <circle cx="80" cy="80" r="49" fill="rgba(217,79,30,0.07)" stroke="rgba(217,79,30,0.75)" stroke-width="2"></circle>
+                  <circle cx="80" cy="80" r="40" fill="rgba(217,79,30,0.12)"></circle>
+                  <line x1="80" y1="31" x2="80" y2="129" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="31" y1="80" x2="129" y2="80" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="43" y1="43" x2="117" y2="117" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <line x1="117" y1="43" x2="43" y2="117" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <text x="80" y="88" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="30" font-weight="700" fill="rgba(242,234,216,1)">26</text>
+                  <text x="80" y="104" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-size="8" letter-spacing="4" fill="rgba(217,79,30,0.85)">CM</text>
+                </svg>
+              </div>
+              <div class="base-tab-body">
+                <p class="base-tab-name">Piccola</p>
+                <p class="base-tab-desc">26 cm · classic</p>
+              </div>
+            </button>
+            <button class="base-tab" data-size="Media" data-cm="30" data-price="3">
+              <div class="base-tab-cover size-svg-cover">
+                <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="size-svg">
+                  <defs>
+                    <radialGradient id="glowM" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="rgba(217,79,30,0.18)"></stop>
+                      <stop offset="100%" stop-color="rgba(217,79,30,0)"></stop>
+                    </radialGradient>
+                  </defs>
+                  <circle cx="80" cy="80" r="70" fill="url(#glowM)"></circle>
+                  <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(217,79,30,0.22)" stroke-width="0.8" stroke-dasharray="4 3"></circle>
+                  <circle cx="80" cy="80" r="62" fill="rgba(217,79,30,0.07)" stroke="rgba(217,79,30,0.75)" stroke-width="2"></circle>
+                  <circle cx="80" cy="80" r="52" fill="rgba(217,79,30,0.12)"></circle>
+                  <line x1="80" y1="18" x2="80" y2="142" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="18" y1="80" x2="142" y2="80" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="30" y1="30" x2="130" y2="130" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <line x1="130" y1="30" x2="30" y2="130" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <text x="80" y="88" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="30" font-weight="700" fill="rgba(242,234,216,1)">30</text>
+                  <text x="80" y="104" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-size="8" letter-spacing="4" fill="rgba(217,79,30,0.85)">CM</text>
+                </svg>
+              </div>
+              <div class="base-tab-body">
+                <p class="base-tab-name">Media</p>
+                <p class="base-tab-desc">30 cm · sharing</p>
+              </div>
+            </button>
+            <button class="base-tab" data-size="Grande" data-cm="34" data-price="7">
+              <div class="base-tab-cover size-svg-cover">
+                <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" class="size-svg">
+                  <defs>
+                    <radialGradient id="glowL" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="rgba(217,79,30,0.18)"></stop>
+                      <stop offset="100%" stop-color="rgba(217,79,30,0)"></stop>
+                    </radialGradient>
+                  </defs>
+                  <circle cx="80" cy="80" r="78" fill="url(#glowL)"></circle>
+                  <circle cx="80" cy="80" r="78" fill="none" stroke="rgba(217,79,30,0.22)" stroke-width="0.8" stroke-dasharray="4 3"></circle>
+                  <circle cx="80" cy="80" r="70" fill="rgba(217,79,30,0.07)" stroke="rgba(217,79,30,0.75)" stroke-width="2"></circle>
+                  <circle cx="80" cy="80" r="59" fill="rgba(217,79,30,0.12)"></circle>
+                  <line x1="80" y1="10" x2="80" y2="150" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="10" y1="80" x2="150" y2="80" stroke="rgba(242,234,216,0.12)" stroke-width="0.8"></line>
+                  <line x1="23" y1="23" x2="137" y2="137" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <line x1="137" y1="23" x2="23" y2="137" stroke="rgba(242,234,216,0.09)" stroke-width="0.8"></line>
+                  <text x="80" y="88" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="30" font-weight="700" fill="rgba(242,234,216,1)">34</text>
+                  <text x="80" y="104" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-size="8" letter-spacing="4" fill="rgba(217,79,30,0.85)">CM</text>
+                </svg>
+              </div>
+              <div class="base-tab-body">
+                <p class="base-tab-name">Grande</p>
+                <p class="base-tab-desc">34 cm · feast</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Add Toppings -->
+        <div>
+          <p class="config-step-label">Step 2 · Add Toppings</p>
+          <div class="toppings-grid">
+            <button class="topping-toggle" data-topping="Prosciutto di Parma" data-price="5">
+              <div class="topping-thumb-wrap">
+                <img src="images/prosciutto-parma.jpg" alt="Prosciutto">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Prosciutto<br>di Parma</span>
+                <span class="topping-price">+$5</span>
+              </div>
+            </button>
+            <button class="topping-toggle" data-topping="Burrata" data-price="6">
+              <div class="topping-thumb-wrap">
+                <img src="images/fior-di-latte.jpg" alt="Burrata">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Burrata</span>
+                <span class="topping-price">+$6</span>
+              </div>
+            </button>
+            <button class="topping-toggle" data-topping="Tartufo Nero" data-price="9">
+              <div class="topping-thumb-wrap">
+                <img src="images/black-truffle.jpg" alt="Tartufo">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Tartufo<br>Nero</span>
+                <span class="topping-price">+$9</span>
+              </div>
+            </button>
+            <button class="topping-toggle" data-topping="Nduja Piccante" data-price="4">
+              <div class="topping-thumb-wrap">
+                <img src="images/san-marzano.jpg" alt="Nduja">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Nduja<br>Piccante</span>
+                <span class="topping-price">+$4</span>
+              </div>
+            </button>
+            <button class="topping-toggle" data-topping="Rucola & Parmigiano" data-price="3">
+              <div class="topping-thumb-wrap">
+                <img src="images/caputo-dough.jpg" alt="Rucola">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Rucola &<br>Parmigiano</span>
+                <span class="topping-price">+$3</span>
+              </div>
+            </button>
+            <button class="topping-toggle" data-topping="Basilico Fresco" data-price="2">
+              <div class="topping-thumb-wrap">
+                <img src="images/sea-salt.jpg" alt="Basilico">
+              </div>
+              <div class="topping-info">
+                <span class="topping-name">Basilico<br>Fresco</span>
+                <span class="topping-price">+$2</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Preview card + Price box -->
+      <div class="config-right">
+        <!-- Pizza preview image -->
+        <div class="config-preview">
+          <img id="config-pizza-img" src="images/margherita-verace.jpg" alt="Your Pizza">
+          <div class="config-size-badge" id="config-size-badge">
+            <span id="config-size-cm">26 CM</span>
+          </div>
+        </div>
+
+        <!-- Price rows -->
+        <div class="price-summary">
+          <div class="price-rows-wrap" id="price-rows"></div>
+        </div>
+
+        <!-- Total + CTA -->
+        <div class="price-total-row">
+          <span class="price-total-label">Total Build</span>
+          <span id="total-price">$18</span>
+        </div>
+        <button class="config-order-btn" id="add-to-cart-btn">Order Your Brace</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- §3 THE MARGHERITA -->
+  <section id="margherita">
+    <div class="split-layout">
+      <img class="split-img" src="images/margherita-verace.jpg" alt="The Margherita">
+      <div class="split-text">
+        <p class="section-eyebrow">Signature</p>
+        <h2 class="split-headline">THE<br>MARGHERITA</h2>
+        <p class="split-sub">Our founding pizza. Every ingredient hand-selected from the volcanic plains of Campania. San Marzano tomatoes, Fior di Latte from Agerola, fresh basil — nothing more, nothing less.</p>
+        <p class="split-price">$18</p>
+        <button class="btn-ember" style="align-self:flex-start">Order Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- §4 STATS -->
+  <section id="stats">
+    <div class="stats-top-rule"></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-glow"></div>
+        <p class="stat-num-label">01</p>
+        <div class="stat-number-wrap">
+          <span class="stat-number"><span class="counter" data-target="485">0</span>°C</span>
+        </div>
+        <div class="stat-label-group">
+          <span class="stat-label">STONE OVEN
+HEAT</span>
+          <p class="stat-desc">Volcanic basalt at peak temperature. The only heat that creates true leopard-char cornicione.</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-glow"></div>
+        <p class="stat-num-label">02</p>
+        <div class="stat-number-wrap">
+          <span class="stat-number"><span class="counter" data-target="90">0</span>s</span>
+        </div>
+        <div class="stat-label-group">
+          <span class="stat-label">BAKE
+TIME</span>
+          <p class="stat-desc">Ninety seconds. No more, no less. The Verace Napoletana standard. Perfection is a discipline.</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-glow"></div>
+        <p class="stat-num-label">03</p>
+        <div class="stat-number-wrap">
+          <span class="stat-number"><span class="counter" data-target="72">0</span>h</span>
+        </div>
+        <div class="stat-label-group">
+          <span class="stat-label">COLD
+FERMENTATION</span>
+          <p class="stat-desc">72 hours at 4°C. Enzymes unlock complexity. The flavour cannot be rushed, pressured or faked.</p>
+        </div>
+      </div>
+      <div class="stat-card" style="border-right:none">
+        <div class="stat-card-glow"></div>
+        <p class="stat-num-label">04</p>
+        <div class="stat-number-wrap">
+          <span class="stat-number"><span class="counter" data-target="7">0</span></span>
+        </div>
+        <div class="stat-label-group">
+          <span class="stat-label">TOPPINGS
+MAX</span>
+          <p class="stat-desc">Seven ingredients. A limit enforced by tradition — and by the physics of a 90-second bake.</p>
+        </div>
+      </div>
+    </div>
+    <div class="stats-top-rule"></div>
+  </section>
+
+  <!-- §5 THE STONE -->
+  <section id="the-stone">
+    <div class="stone-bg"></div>
+    <div class="stone-glow"></div>
+    <div class="stone-content">
+      <p class="section-eyebrow">The Process</p>
+      <h2 class="stone-title">THE<br>STONE</h2>
+      <p class="stone-desc">Our volcanic stone oven reaches 485°C — the only temperature at which Neapolitan dough achieves its characteristic leopard-spotted char. 72 hours of cold fermentation. 90 seconds of fire. The result cannot be rushed.</p>
+    </div>
+  </section>
+
+  <!-- §6 TOPPINGS / THE FIRE — Dual Marquee with Header -->
+  <section id="toppings">
+    <div class="toppings-header">
+      <div class="toppings-header-left">
+        <p class="section-eyebrow">// 05. THE INGREDIENTS</p>
+        <h2 class="section-title" style="margin-bottom:0;font-size:clamp(2rem,4vw,3.5rem)">Every Layer.<br>Uncompromised.</h2>
+      </div>
+      <p class="toppings-header-right">Each topping sourced at its peak — from Campanian tomatoes to Umbrian truffles. Quality is not a differentiator. It is the baseline.</p>
+    </div>
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <div class="marquee-item">San Marzano DOP <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Fior di Latte <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Nduja Calabrese <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Tartufo Nero <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Prosciutto di Parma <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Basilico Genovese <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Rucola Selvatica <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Parmigiano Reggiano <span class="marquee-dot"></span></div>
+        <div class="marquee-item">San Marzano DOP <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Fior di Latte <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Nduja Calabrese <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Tartufo Nero <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Prosciutto di Parma <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Basilico Genovese <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Rucola Selvatica <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Parmigiano Reggiano <span class="marquee-dot"></span></div>
+      </div>
+    </div>
+    <div class="marquee-wrap">
+      <div class="marquee-track reverse">
+        <div class="marquee-item">Stracciatella <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Caputo 00 Flour <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Burrata di Puglia <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Acciughe Cantabrico <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Olio EVO Siciliano <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Sale Marino di Sicilia <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Lievito Madre <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Cipolla di Tropea <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Stracciatella <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Caputo 00 Flour <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Burrata di Puglia <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Acciughe Cantabrico <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Olio EVO Siciliano <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Sale Marino di Sicilia <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Lievito Madre <span class="marquee-dot"></span></div>
+        <div class="marquee-item">Cipolla di Tropea <span class="marquee-dot"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §7 THE SOURCE / CRAFT GRID -->
+  <section id="source">
+    <div class="source-section-head">
+      <div>
+        <p class="section-eyebrow">// 06. THE CRAFT</p>
+        <h2 class="section-title" style="margin-bottom:0;font-size:clamp(2rem,4vw,3.5rem)">Sourced.<br>Crafted. Fired.</h2>
+      </div>
+      <p class="source-section-head-right">Nine hand-selected ingredients. Each sourced, cured, or stone-fired to its peak — then layered into BRACE.</p>
+    </div>
+    <div class="craft-grid">
+      <div class="craft-card wide">
+        <img src="images/stone-oven-interior.jpg" alt="Stone Oven">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">VOLCANIC FIRE</p>
+          <p class="craft-card-sub">Basalt Stone · 485°C</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+      <div class="craft-card">
+        <img src="images/san-marzano.jpg" alt="San Marzano">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">SAN MARZANO DOP</p>
+          <p class="craft-card-sub">Campania · Hand-crushed</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+      <div class="craft-card">
+        <img src="images/fior-di-latte.jpg" alt="Fior di Latte">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">FIOR DI LATTE</p>
+          <p class="craft-card-sub">Agerola · Hand-pulled</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+      <div class="craft-card">
+        <img src="images/caputo-dough.jpg" alt="Caputo Flour">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">CAPUTO 00 FLOUR</p>
+          <p class="craft-card-sub">Napoli · Cold-fermented</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+      <div class="craft-card">
+        <img src="images/prosciutto-parma.jpg" alt="Prosciutto">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">PROSCIUTTO DI PARMA</p>
+          <p class="craft-card-sub">Parma · 24-month aged</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+      <div class="craft-card">
+        <img src="images/black-truffle.jpg" alt="Tartufo Nero">
+        <div class="craft-card-overlay"></div>
+        <div class="craft-card-info">
+          <p class="craft-card-label">TARTUFO NERO</p>
+          <p class="craft-card-sub">Umbria · Shaved fresh</p>
+        </div>
+        <div class="craft-card-corner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §8 THE STORY -->
+  <section id="story">
+    <div class="story-head">
+      <p class="story-head-eyebrow">ARCHIVE // BRACE PHILOSOPHY</p>
+      <h2 class="story-head-title"><span class="story-num">// 07.</span><br>THE STORY</h2>
+      <a href="#" class="story-head-link">VIEW ALL ��</a>
+    </div>
+    <div class="story-grid">
+      <a href="#" class="story-card">
+        <div class="story-card-hover-glow"></div>
+        <div class="story-card-meta">
+          <span class="story-card-tag">CRAFT</span>
+          <span class="story-card-ghost-num">01</span>
+        </div>
+        <h3 class="story-card-title">Why We Ferment for <span class="accent-word">72 Hours</span></h3>
+        <p class="story-card-excerpt">Cold fermentation at 4°C over three days develops the complex flavour compounds that make our crust unlike anything else. Here is exactly why we chose 72 hours.</p>
+        <div class="story-card-footer">
+          <span class="story-card-read-time">5 MIN READ</span>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <span class="story-card-date">06 — 24</span>
+            <svg class="story-card-arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3M5 3h7v7"></path></svg>
+          </div>
+        </div>
+        <div class="story-card-bottom-line"></div>
+      </a>
+      <a href="#" class="story-card">
+        <div class="story-card-hover-glow"></div>
+        <div class="story-card-meta">
+          <span class="story-card-tag">TERROIR</span>
+          <span class="story-card-ghost-num">02</span>
+        </div>
+        <h3 class="story-card-title">The Volcanic <span class="accent-word">Basalt Stone</span></h3>
+        <p class="story-card-excerpt">Our oven is built from volcanic basalt quarried in the Campanian highlands — the same stone that's been used for centuries in Napoli.</p>
+        <div class="story-card-footer">
+          <span class="story-card-read-time">4 MIN READ</span>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <span class="story-card-date">06 — 17</span>
+            <svg class="story-card-arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3M5 3h7v7"></path></svg>
+          </div>
+        </div>
+        <div class="story-card-bottom-line"></div>
+      </a>
+      <a href="#" class="story-card">
+        <div class="story-card-hover-glow"></div>
+        <div class="story-card-meta">
+          <span class="story-card-tag">HERITAGE</span>
+          <span class="story-card-ghost-num">03</span>
+        </div>
+        <h3 class="story-card-title">Neapolitan <span class="accent-word">Roots</span></h3>
+        <p class="story-card-excerpt">Every recipe traces back to the original Associazione Verace Pizza Napoletana guidelines. Tradition is not an option — it's the foundation.</p>
+        <div class="story-card-footer">
+          <span class="story-card-read-time">6 MIN READ</span>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <span class="story-card-date">06 — 10</span>
+            <svg class="story-card-arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3M5 3h7v7"></path></svg>
+          </div>
+        </div>
+        <div class="story-card-bottom-line"></div>
+      </a>
+      <a href="#" class="story-card">
+        <div class="story-card-hover-glow"></div>
+        <div class="story-card-meta">
+          <span class="story-card-tag">TECHNIQUE</span>
+          <span class="story-card-ghost-num">04</span>
+        </div>
+        <h3 class="story-card-title">Engineering the <span class="accent-word">Perfect Char</span></h3>
+        <p class="story-card-excerpt">The leopard-spotted cornicione — dark blisters on a pillowy crust — is not a mistake. It's the signature of 485°C applied correctly, briefly, and with absolute precision.</p>
+        <div class="story-card-footer">
+          <span class="story-card-read-time">7 MIN READ</span>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <span class="story-card-date">06 — 03</span>
+            <svg class="story-card-arrow" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3M5 3h7v7"></path></svg>
+          </div>
+        </div>
+        <div class="story-card-bottom-line"></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- §9 RESERVE -->
+  <section id="reserve">
+    <div class="res-blob-t"></div>
+    <div class="res-blob-b"></div>
+
+    <div class="reserve-inner">
+
+      <!-- Centered header -->
+      <div class="reserve-header">
+        <p class="section-eyebrow">BOOK YOUR TABLE · BRACE.</p>
+        <h2>RESERVE<br><span>THE TABLE</span></h2>
+        <p>Open daily 12:00 – 22:00 · Walk-ins welcome, reservation preferred.</p>
+        <div class="reserve-header-divider"></div>
+      </div>
+
+      <!-- Main form steps -->
+      <div id="reserve-steps">
+        <!-- Outer card -->
+        <div class="reserve-card">
+          <div class="reserve-cols">
+
+            <!-- LEFT COL: Calendar + Party Size -->
+            <div class="reserve-col">
+
+              <!-- Step 1: Calendar -->
+              <div>
+                <p class="reserve-step-label">01 · Select Date</p>
+                <div class="cal-wrap">
+                  <div class="cal-month-nav">
+                    <button id="cal-prev">�</button>
+                    <span class="cal-month-label" id="cal-month-label">JUNE 2026</span>
+                    <button id="cal-next">�</button>
+                  </div>
+                  <div class="cal-weekdays">
+                    <div class="cal-wd">M</div><div class="cal-wd">T</div><div class="cal-wd">W</div>
+                    <div class="cal-wd">T</div><div class="cal-wd">F</div><div class="cal-wd">S</div><div class="cal-wd">S</div>
+                  </div>
+                  <div class="cal-days" id="cal-days"></div>
+                </div>
+              </div>
+
+              <!-- Step 2: Party size -->
+              <div>
+                <p class="reserve-step-label">02 · Party Size</p>
+                <div class="party-stepper">
+                  <button class="party-btn" id="party-minus">−</button>
+                  <div class="party-count-wrap">
+                    <span class="party-count" id="party-count">2</span>
+                    <span class="party-guests-label">Guests</span>
+                  </div>
+                  <button class="party-btn" id="party-plus">+</button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COL: Time + Details -->
+            <div class="reserve-col">
+
+              <!-- Step 3: Time -->
+              <div>
+                <p class="reserve-step-label">03 · Select Time</p>
+                <p class="time-service-label">Lunch Service</p>
+                <div class="time-slots" style="margin-bottom:0.75rem">
+                  <div class="time-slot" data-time="12:00">12:00</div>
+                  <div class="time-slot" data-time="12:30">12:30</div>
+                  <div class="time-slot" data-time="13:00">13:00</div>
+                  <div class="time-slot" data-time="13:30">13:30</div>
+                </div>
+                <p class="time-service-label" style="margin-top:0.25rem">Dinner Service</p>
+                <div class="time-slots">
+                  <div class="time-slot" data-time="19:00">19:00</div>
+                  <div class="time-slot" data-time="19:30">19:30</div>
+                  <div class="time-slot" data-time="20:00">20:00</div>
+                  <div class="time-slot" data-time="20:30">20:30</div>
+                  <div class="time-slot" data-time="21:00">21:00</div>
+                  <div class="time-slot" data-time="21:30">21:30</div>
+                  <div class="time-slot" data-time="22:00">22:00</div>
+                  <div class="time-slot" data-time="22:30">22:30</div>
+                </div>
+              </div>
+
+              <!-- Step 4: Details -->
+              <div>
+                <p class="reserve-step-label">04 · Your Details</p>
+                <div class="res-fields">
+                  <input class="res-input" id="res-name" type="text" placeholder="Your name">
+                  <input class="res-input" id="res-email" type="email" placeholder="Email or phone">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary + CTA below card -->
+        <p class="reserve-summary" id="reserve-summary"></p>
+        <button id="reserve-btn">RESERVE YOUR TABLE</button>
+        <p class="reserve-fine-print">No account required · Free to book · Cancel anytime</p>
+      </div>
+
+      <!-- Confirmation -->
+      <div class="reserve-confirm" id="reserve-confirm">
+        <div class="confirm-check">✓</div>
+        <p class="section-eyebrow">Confirmed</p>
+        <p style="opacity:0.5;font-size:0.85rem;max-width:300px;text-align:center" id="confirm-text">Your table has been reserved. We look forward to welcoming you.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">BRACE.</div>
+    <ul class="footer-links">
+      <li><a href="#pizzas">Menu</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+      <li><a href="#reserve">Contact</a></li>
+    </ul>
+    <div class="footer-right">
+      <p class="footer-tagline">Stone-Fired Napolitan Pizza</p>
+      <p class="footer-copy">© <span id="footer-year">2024</span> BRACE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+   document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── CONFIGURATOR ── */
+    let basePrice = 18;
+    let sizeExtra = 0;
+    const toppingPrices = {};
+
+    function updatePrice() {
+      const toppingTotal = Object.values(toppingPrices).reduce((a,b) => a+b, 0);
+      const total = basePrice + sizeExtra + toppingTotal;
+      document.getElementById('total-price').textContent = '$' + total;
+
+      const rows = document.getElementById('price-rows');
+      rows.innerHTML = '';
+
+      const activeSize = document.querySelector('.size-tabs .base-tab.active');
+      if (activeSize) {
+        const r = document.createElement('div');
+        r.className = 'price-row';
+        const sizeLabel = activeSize.dataset.size + ' ' + activeSize.dataset.cm + 'cm';
+        r.innerHTML = `<span>${sizeLabel}</span><span>$${basePrice + sizeExtra}</span>`;
+        rows.appendChild(r);
+      }
+
+      Object.entries(toppingPrices).forEach(([name, price]) => {
+        const r = document.createElement('div');
+        r.className = 'price-row';
+        r.innerHTML = `<span>${name}</span><span>+$${price}</span>`;
+        rows.appendChild(r);
+      });
+    }
+
+    // ── SIZE TABS ──
+    const sizeBadge = document.getElementById('config-size-badge');
+    const sizeCmText = document.getElementById('config-size-cm');
+    let currentPizzaGhostSrc = 'assets/pizzas/margherita-verace.jpg';
+
+    function updateSizeGhosts(src) {
+      document.querySelectorAll('.size-svg-cover').forEach(cover => {
+        cover.style.backgroundImage = `url('${src}')`;
+      });
+    }
+
+    document.querySelectorAll('.size-tabs .base-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.size-tabs .base-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const prevExtra = sizeExtra;
+        sizeExtra = parseInt(tab.dataset.price);
+
+        // Show CM badge in preview
+        const cm = tab.dataset.cm;
+        sizeCmText.textContent = cm + ' CM';
+        sizeBadge.classList.add('visible');
+        gsap.fromTo(sizeCmText, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.7)' });
+        clearTimeout(sizeBadge._hideTimer);
+        sizeBadge._hideTimer = setTimeout(() => sizeBadge.classList.remove('visible'), 2200);
+
+        // Fly size label to total + punch price
+        const diff = sizeExtra - prevExtra;
+        const isMobile = window.innerWidth <= 640;
+        if (isMobile) {
+          // On mobile the preview sits above the controls — scroll up to it so the
+          // user sees the size badge + new total, instead of a fly to an offscreen price.
+          updatePrice();
+          const nav = document.querySelector('nav');
+          const navH = nav ? nav.offsetHeight : 56;
+          const preview = document.querySelector('.config-right');
+          if (preview) {
+            const top = preview.getBoundingClientRect().top + window.scrollY - navH - 12;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+          setTimeout(punchPrice, 480);
+        } else {
+          if (diff !== 0) {
+            const label = diff > 0 ? '+$' + diff : '-$' + Math.abs(diff);
+            flyToTotal(tab, label);
+          } else {
+            punchPrice();
+          }
+          updatePrice();
+        }
+      });
+    });
+
+    // ── TOPPING TOGGLES — fly animation ──
+    document.querySelectorAll('.topping-toggle').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const name = toggle.dataset.topping;
+        const price = parseInt(toggle.dataset.price);
+        const isActive = toggle.classList.toggle('active');
+
+        if (isActive) {
+          toppingPrices[name] = price;
+          flyToTotal(toggle, '+$' + price);
+        } else {
+          delete toppingPrices[name];
+          updatePrice();
+          punchPrice();
+          return;
+        }
+        updatePrice();
+      });
+    });
+
+    // ── FLY TO TOTAL ── (arc bogen + price blink)
+    function flyToTotal(el, label) {
+      const totalEl = document.getElementById('total-price');
+      const toRect = totalEl.getBoundingClientRect();
+
+      // If the total is scrolled out of view (mobile, deep in the toppings list),
+      // skip the arc — just punch the price so the feedback isn't lost off-screen.
+      if (toRect.bottom < 56 || toRect.top > window.innerHeight) { punchPrice(); return; }
+
+      // Use topping thumbnail image if available, else text pill
+      const thumbImg = el.querySelector('.topping-thumb-wrap img');
+      let clone;
+
+      if (thumbImg) {
+        const fromRect = thumbImg.getBoundingClientRect();
+        clone = document.createElement('img');
+        clone.src = thumbImg.src;
+        clone.className = 'fly-clone-img';
+        document.body.appendChild(clone);
+
+        const startX = fromRect.left + fromRect.width / 2;
+        const startY = fromRect.top + fromRect.height / 2;
+        const endX = toRect.left + toRect.width / 2;
+        const endY = toRect.top + toRect.height / 2;
+        const midX = startX + (endX - startX) * 0.4;
+        const midY = Math.min(startY, endY) - 100;
+
+        gsap.set(clone, {
+          position: 'fixed', top: 0, left: 0,
+          width: fromRect.width, height: fromRect.height,
+          x: startX - fromRect.width / 2,
+          y: startY - fromRect.height / 2,
+          borderRadius: '50%', opacity: 1, zIndex: 9999,
+          boxShadow: '0 0 16px rgba(217,79,30,0.7)'
+        });
+
+        const tl = gsap.timeline({ onComplete: () => { clone.remove(); punchPrice(); } });
+        tl.to(clone, { x: midX - fromRect.width / 2, y: midY - fromRect.height / 2, scale: 1.15, duration: 0.4, ease: 'power2.out' })
+          .to(clone, { x: endX - fromRect.width / 2, y: endY - fromRect.height / 2, scale: 0.3, opacity: 0, duration: 0.38, ease: 'power2.in' });
+
+      } else {
+        // Fallback: text pill for size tab clicks
+        const fromRect = el.getBoundingClientRect();
+        clone = document.createElement('div');
+        clone.className = 'fly-clone';
+        clone.textContent = label;
+        document.body.appendChild(clone);
+
+        const startX = fromRect.left + fromRect.width / 2;
+        const startY = fromRect.top + fromRect.height / 2;
+        const endX = toRect.left + toRect.width / 2;
+        const endY = toRect.top + toRect.height / 2;
+        const midX = (startX + endX) / 2;
+        const midY = Math.min(startY, endY) - 80;
+
+        gsap.set(clone, { x: startX, y: startY, xPercent: -50, yPercent: -50, scale: 1.1, opacity: 1 });
+        const tl = gsap.timeline({ onComplete: () => { clone.remove(); punchPrice(); } });
+        tl.to(clone, { x: midX, y: midY, scale: 0.85, duration: 0.38, ease: 'power2.out' })
+          .to(clone, { x: endX, y: endY, scale: 0.2, opacity: 0, duration: 0.38, ease: 'power2.in' });
+      }
+    }
+
+    function punchPrice() {
+      const totalEl = document.getElementById('total-price');
+      gsap.timeline()
+        .to(totalEl, { scale: 1.4, color: 'var(--cream)', textShadow: '0 0 28px rgba(217,79,30,1)', duration: 0.1, ease: 'power3.out' })
+        .to(totalEl, { scale: 1,   color: 'var(--ember)', textShadow: 'none',                        duration: 0.3, ease: 'elastic.out(1.3, 0.4)' });
+    }
+
+    // ── §1 ORDER BUTTON — fly pizza → configurator + scroll ──
+    document.querySelectorAll('.pizza-order-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const card = btn.closest('.pizza-card');
+        const cardImg = card.querySelector('img');
+        const targetBase = card.dataset.base;
+        const targetImg = card.dataset.img;
+        const fromRect = cardImg.getBoundingClientRect();
+        const configPreview = document.querySelector('.config-preview');
+        const toRect = configPreview.getBoundingClientRect();
+
+        // Clone pizza image, fly it
+        const flyImg = document.createElement('img');
+        flyImg.className = 'pizza-fly-img';
+        flyImg.src = cardImg.src;
+        flyImg.style.left = fromRect.left + 'px';
+        flyImg.style.top = fromRect.top + 'px';
+        flyImg.style.width = fromRect.width + 'px';
+        flyImg.style.height = fromRect.height + 'px';
+        document.body.appendChild(flyImg);
+
+        const tl = gsap.timeline({ onComplete: () => flyImg.remove() });
+        tl.to(flyImg, {
+          left: toRect.left,
+          top: toRect.top,
+          width: toRect.width,
+          height: toRect.height,
+          duration: 0.7,
+          ease: 'power3.inOut',
+          opacity: 0.85
+        })
+        .to(flyImg, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+
+        // Switch preview image + update ghost in size tabs
+        const configImg = document.getElementById('config-pizza-img');
+        if (configImg && targetImg) {
+          gsap.to(configImg, { opacity: 0, duration: 0.2, onComplete: () => {
+            configImg.src = targetImg;
+            gsap.to(configImg, { opacity: 1, duration: 0.3 });
+          }});
+          currentPizzaGhostSrc = targetImg;
+          updateSizeGhosts(targetImg);
+        }
+        updatePrice();
+
+        // Smooth scroll to configurator after slight delay
+        setTimeout(() => {
+          document.getElementById('configurator').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+      });
+    });
+
+    updatePrice();
+    updateSizeGhosts(currentPizzaGhostSrc);
+
+    /* ── RESERVE CALENDAR ── */
+    const MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+    const today = new Date();
+    let calYear = today.getFullYear();
+    let calMonth = today.getMonth();
+    let selDate = null;
+    let selTime = null;
+    let partySize = 2;
+
+    function renderCalendar() {
+      const label = document.getElementById('cal-month-label');
+      label.textContent = MONTHS[calMonth] + ' ' + calYear;
+
+      const container = document.getElementById('cal-days');
+      container.innerHTML = '';
+
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const offset = (firstDay === 0) ? 6 : firstDay - 1;
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+      for (let i = 0; i < offset; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'cal-day empty';
+        container.appendChild(empty);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cal-day';
+        dayEl.textContent = d;
+
+        const thisDate = new Date(calYear, calMonth, d);
+        const todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        if (thisDate < todayMid) {
+          dayEl.classList.add('past');
+        } else if (thisDate.toDateString() === todayMid.toDateString()) {
+          dayEl.classList.add('today');
+        }
+
+        if (selDate && thisDate.toDateString() === selDate.toDateString()) {
+          dayEl.classList.add('selected');
+        }
+
+        dayEl.addEventListener('click', () => {
+          if (dayEl.classList.contains('past')) return;
+          selDate = new Date(calYear, calMonth, d);
+          renderCalendar();
+          updateReserveSummary();
+          updateReserveBtn();
+        });
+
+        container.appendChild(dayEl);
+      }
+    }
+
+    document.getElementById('cal-prev').addEventListener('click', () => {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+
+    document.getElementById('cal-next').addEventListener('click', () => {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+
+    // Party stepper
+    document.getElementById('party-minus').addEventListener('click', () => {
+      if (partySize > 1) { partySize--; document.getElementById('party-count').textContent = partySize; updateReserveSummary(); }
+    });
+    document.getElementById('party-plus').addEventListener('click', () => {
+      if (partySize < 12) { partySize++; document.getElementById('party-count').textContent = partySize; updateReserveSummary(); }
+    });
+
+    // Time slots
+    document.querySelectorAll('.time-slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+        slot.classList.add('selected');
+        selTime = slot.dataset.time;
+        updateReserveSummary();
+        updateReserveBtn();
+      });
+    });
+
+    // Name/email inputs
+    document.getElementById('res-name').addEventListener('input', updateReserveBtn);
+    document.getElementById('res-email').addEventListener('input', updateReserveBtn);
+
+    function updateReserveSummary() {
+      const el = document.getElementById('reserve-summary');
+      if (selDate && selTime) {
+        const dateStr = selDate.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'long' });
+        el.textContent = dateStr + ' · ' + selTime + ' · ' + partySize + (partySize === 1 ? ' Guest' : ' Guests');
+      } else if (selDate) {
+        const dateStr = selDate.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'long' });
+        el.textContent = dateStr + ' · Select a time above';
+      } else {
+        el.textContent = '';
+      }
+    }
+
+    function updateReserveBtn() {
+      const btn = document.getElementById('reserve-btn');
+      const name = document.getElementById('res-name').value.trim();
+      const email = document.getElementById('res-email').value.trim();
+      const valid = selDate && selTime && name && email;
+      btn.classList.toggle('active', !!valid);
+    }
+
+    document.getElementById('reserve-btn').addEventListener('click', () => {
+      const btn = document.getElementById('reserve-btn');
+      if (!btn.classList.contains('active')) return;
+      const name = document.getElementById('res-name').value.trim();
+      const dateStr = selDate.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      document.getElementById('confirm-text').textContent =
+        name + ', your table for ' + partySize + ' on ' + dateStr + ' at ' + selTime + ' is confirmed. See you soon.';
+      document.getElementById('reserve-steps').style.display = 'none';
+      document.getElementById('reserve-confirm').classList.add('show');
+    });
+
+    renderCalendar();
+
+    /* ── STATS COUNTER ── */
+    const counters = document.querySelectorAll('.counter');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          const duration = target > 1000 ? 1.8 : 1.2;
+          gsap.fromTo(el, { innerText: 0 }, {
+            innerText: target,
+            duration,
+            ease: 'power2.out',
+            snap: { innerText: 1 },
+            onUpdate() { el.textContent = Math.round(parseFloat(el.innerHTML)); }
+          });
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(c => counterObserver.observe(c));
+
+    /* ── HUD RULER TICKS ── */
+    (function() {
+      const ruler = document.getElementById('hud-ruler');
+      for (let i = 0; i < 20; i++) {
+        const d = document.createElement('div');
+        d.className = 'hud-tick' + (i % 4 === 0 ? ' major' : '');
+        ruler.appendChild(d);
+      }
+    })();
+
+    /* ── HUD TIMECODE ── */
+    (function() {
+      const tc = document.getElementById('hud-timecode');
+      let f = 0, s = 0, m = 0, h = 0;
+      setInterval(() => {
+        f = (f + 1) % 24;
+        if (f === 0) { s = (s + 1) % 60; }
+        if (s === 0 && f === 0) { m = (m + 1) % 60; }
+        if (m === 0 && s === 0 && f === 0) { h = (h + 1) % 24; }
+        const pad = n => String(n).padStart(2,'0');
+        tc.textContent = pad(h)+':'+pad(m)+':'+pad(s)+':'+pad(f);
+      }, 1000/24);
+    })();
+
+    /* ── MOBILE NAV (hamburger drawer) ── */
+    (function() {
+      const toggle = document.getElementById('nav-toggle');
+      const drawer = document.getElementById('nav-drawer');
+      if (!toggle || !drawer) return;
+      let open = false;
+      const setOpen = (v) => {
+        open = v;
+        toggle.classList.toggle('open', v);
+        drawer.classList.toggle('open', v);
+        toggle.setAttribute('aria-expanded', v ? 'true' : 'false');
+      };
+      toggle.addEventListener('click', () => setOpen(!open));
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+      window.addEventListener('scroll', () => { if (open) setOpen(false); }, { passive: true });
+    })();
+
+    /* ── HERO CANVAS SCRUB ── */
+    (function() {
+      const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
+      const TOTAL = IS_MOBILE ? 100 : 162;
+      const FRAME_DIR = IS_MOBILE ? 'frames-mobile' : 'frames';
+      const frames = new Array(TOTAL);
+      let loaded = 0;
+      const canvas = document.getElementById('hero-canvas');
+      const ctx = canvas.getContext('2d');
+      const loaderBar = document.getElementById('hero-loader-bar');
+      const loaderEl = document.getElementById('hero-loader');
+      const heroBg = document.getElementById('hero-bg');
+      const scrubFill = document.getElementById('hud-scrubber-fill');
+      const scrubKnob = document.getElementById('hud-scrubber-knob');
+      const frameNum = document.getElementById('hud-frame-num');
+
+      function setCanvasSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      setCanvasSize();
+      window.addEventListener('resize', () => { setCanvasSize(); drawFrame(currentFrame); });
+
+      let currentFrame = 0;
+      function drawFrame(idx) {
+        currentFrame = idx;
+        const img = frames[idx];
+        if (!img || !img.complete || !img.naturalWidth) return;
+        const cw = canvas.width, ch = canvas.height;
+        const iw = img.naturalWidth, ih = img.naturalHeight;
+        const scale = Math.max(cw / iw, ch / ih);
+        const sw = iw * scale, sh = ih * scale;
+        const ox = (cw - sw) / 2, oy = (ch - sh) / 2;
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(img, ox, oy, sw, sh);
+      }
+
+      function updateHUD(progress) {
+        const pct = (progress * 100).toFixed(1) + '%';
+        if (scrubFill) scrubFill.style.width = pct;
+        if (scrubKnob) scrubKnob.style.left = pct;
+        if (frameNum) frameNum.textContent = String(Math.round(progress * (TOTAL-1))).padStart(3,'0');
+      }
+
+      let started = false;
+      function startScrub() {
+        if (started) return;
+        started = true;
+        heroBg.style.display = 'none';
+        gsap.to(loaderEl, { opacity: 0, duration: 0.4, onComplete: () => loaderEl.style.display = 'none' });
+        drawFrame(0);
+
+        const obj = { frame: 0 };
+        gsap.to(obj, {
+          frame: TOTAL - 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero-wrap',
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.5,
+            onUpdate: self => {
+              const f = Math.round(self.progress * (TOTAL - 1));
+              drawFrame(f);
+              updateHUD(self.progress);
+            }
+          }
+        });
+      }
+
+      // Progressive: kick off the scrub once frame 0 + a head-start chunk are in,
+      // instead of waiting for all frames. drawFrame() safely skips not-yet-loaded frames.
+      // Desktop used to wait for literally every frame before allowing scroll — with
+      // 162 desktop frames that read as "the hero never finishes loading". Now starts
+      // after the same ~20% head start mobile already used.
+      const HEAD_START = IS_MOBILE ? 20 : 35;
+      function maybeStart() {
+        if (!started && frames[0] && frames[0].complete && frames[0].naturalWidth && loaded >= HEAD_START) {
+          startScrub();
+        }
+      }
+      for (let i = 0; i < TOTAL; i++) {
+        const img = new Image();
+        const num = String(i + 1).padStart(4, '0');
+        img.src = `assets/${FRAME_DIR}/frame_${num}.jpg`;
+        img.onload = () => {
+          loaded++;
+          loaderBar.style.width = (loaded / TOTAL * 100) + '%';
+          if (loaded === TOTAL) startScrub(); else maybeStart();
+        };
+        img.onerror = () => { loaded++; if (loaded === TOTAL) startScrub(); else maybeStart(); };
+        frames[i] = img;
+      }
+    })();
+
+    /* ── SOURCE DRAG SCROLL (legacy – element removed, keeping guard) ── */
+    const sourceScroll = document.getElementById('source-scroll');
+    let isDown = false, startX, scrollLeft;
+
+    if (sourceScroll) {
+    sourceScroll.addEventListener('mousedown', e => {
+      isDown = true;
+      sourceScroll.style.cursor = 'grabbing';
+      startX = e.pageX - sourceScroll.offsetLeft;
+      scrollLeft = sourceScroll.scrollLeft;
+    });
+    sourceScroll.addEventListener('mouseleave', () => { isDown = false; sourceScroll.style.cursor = 'grab'; });
+    sourceScroll.addEventListener('mouseup', () => { isDown = false; sourceScroll.style.cursor = 'grab'; });
+    sourceScroll.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - sourceScroll.offsetLeft;
+      sourceScroll.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+    } // end sourceScroll guard
+
+    /* ── GSAP SCROLL REVEALS ── */
+    gsap.utils.toArray('.pizza-card, .story-card, .source-card').forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    gsap.fromTo('.stone-title',
+      { opacity: 0, x: -50 },
+      { opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#the-stone', start: 'top 70%' }
+      }
+    );
+   });
+  </script>
+
+  <script>
+    // ── THEME TOGGLE ──
+    (function () {
+      const btn = document.getElementById('theme-toggle');
+      const lbl = document.getElementById('theme-toggle-label');
+      const html = document.documentElement;
+
+      function applyTheme(light) {
+        html.classList.toggle('light', light);
+        lbl.textContent = light ? 'DARK' : 'LIGHT';
+        try { localStorage.setItem('brace-theme', light ? 'light' : 'dark'); } catch(e){}
+      }
+
+      btn.addEventListener('click', function () {
+        applyTheme(!html.classList.contains('light'));
+      });
+
+      // Restore saved preference
+      try {
+        if (localStorage.getItem('brace-theme') === 'light') applyTheme(true);
+      } catch(e){}
+    })();
+  </script>
+
+
+</body></html>

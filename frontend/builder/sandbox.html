@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sandbox Preview</title>
+</head>
+<body>
+  <script>
+    // Handle postMessage renders (AI generation)
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'RENDER') {
+        document.open();
+        document.write(event.data.html);
+        document.close();
+      }
+    });
+
+    // If loaded with ?src= param, fetch and render that file
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get('src');
+    if (src) {
+      fetch(src)
+        .then(r => r.text())
+        .then(html => {
+          document.open();
+          document.write(html);
+          document.close();
+        })
+        .catch(err => {
+          document.body.innerHTML = '<p style="color:red;padding:20px">Erro ao carregar: ' + err.message + '</p>';
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Sidarta Pages</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f111a;
+      --text-primary: #f8f9fa;
+      --text-secondary: #adb5bd;
+      --accent-color: #0d6efd;
+      --accent-gradient: linear-gradient(135deg, #0d6efd, #4db8ff);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% -20%, rgba(13, 110, 253, 0.15), transparent 50%);
+    }
+
+    .auth-container {
+      width: 100%; max-width: 400px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .auth-header { text-align: center; margin-bottom: 30px; }
+    .auth-header svg { color: var(--accent-color); fill: rgba(13, 110, 253, 0.2); margin-bottom: 16px; }
+    .auth-header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .auth-header p { color: var(--text-secondary); font-size: 14px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    }
+    .form-control {
+      width: 100%; padding: 14px 16px;
+      background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
+      border-radius: 10px; color: var(--text-primary); font-family: inherit; font-size: 14px;
+      transition: var(--transition); outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    }
+
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: var(--accent-gradient); border: none; border-radius: 10px;
+      color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
+      transition: var(--transition); margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13, 110, 253, 0.4); }
+
+    .auth-footer {
+      text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-secondary);
+    }
+    .auth-footer a {
+      color: var(--accent-color); text-decoration: none; font-weight: 600;
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    .error-msg {
+      color: #ff4d4f; font-size: 13px; text-align: center; margin-bottom: 16px; display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <h1>Bem-vindo de volta</h1>
+      <p>Acesse seu dashboard Sidarta Pages</p>
+    </div>
+
+    <div id="error-message" class="error-msg">Email ou senha incorretos.</div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-submit" id="btn-login">Entrar</button>
+    </form>
+
+    <div class="auth-footer">
+      Não tem uma conta? <a href="register.html">Criar agora</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './supabase-config.js';
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      const btn = document.getElementById('btn-login');
+      const err = document.getElementById('error-message');
+      
+      btn.textContent = 'Carregando...';
+      err.style.display = 'none';
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: pass,
+      });
+
+      if (error) {
+        err.textContent = "Erro: " + error.message;
+        err.style.display = 'block';
+        btn.textContent = 'Entrar';
+      } else {
+        window.location.href = 'dashboard/index.html';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "sidarta-pages-monorepo",
+  "version": "1.0.0",
+  "description": "Sidarta Pages - Plataforma de criação de páginas por IA (Vercel Frontend + Render Backend)",
+  "scripts": {
+    "start": "cd frontend && npm start",
+    "start:backend": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": ["sidarta-pages", "vercel", "render", "ai-builder"],
+  "author": "",
+  "license": "ISC"
+}
