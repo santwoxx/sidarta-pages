@@ -13,7 +13,7 @@ class AIService {
       gemini: ''
     };
     this.defaultProvider = 'gemini'; // 'openai', 'anthropic', 'gemini'
-    this.defaultModel = 'gemini-1.5-flash-latest';
+    this.defaultModel = 'gemini-1.5-flash';
   }
 
   // Carrega as configurações (com suporte a chrome.storage ou localStorage)
@@ -203,34 +203,44 @@ class AIService {
 
   async _callGemini(prompt, systemPrompt) {
     const apiKey = this.keys.gemini;
-    // Lista de modelos Gemini suportados em ordem de preferência
+    if (!apiKey) {
+      throw new Error('Chave de API do Gemini não configurada. Insira sua chave no Painel Admin.');
+    }
+
     const modelsToTry = [
-      'gemini-1.5-flash-latest',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-      'gemini-pro'
+      { name: 'gemini-1.5-flash', version: 'v1beta' },
+      { name: 'gemini-1.5-flash', version: 'v1' },
+      { name: 'gemini-2.0-flash', version: 'v1beta' },
+      { name: 'gemini-1.5-pro', version: 'v1beta' }
     ];
 
     let lastError = null;
+    let isRateLimited = false;
 
-    for (const model of modelsToTry) {
+    for (const item of modelsToTry) {
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/${item.version}/models/${item.name}:generateContent?key=${apiKey}`;
 
         const bodyData = {
           contents: [{ parts: [{ text: prompt }] }]
         };
-        if (systemPrompt) {
+        if (systemPrompt && item.version === 'v1beta') {
           bodyData.systemInstruction = { parts: [{ text: systemPrompt }] };
         }
 
         const response = await fetch(url, {
           method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(bodyData)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            ...(systemPrompt ? { systemInstruction: { parts: [{ text: systemPrompt }] } } : {})
+          })
         });
+
+        if (response.status === 429) {
+          isRateLimited = true;
+          break;
+        }
 
         const data = await response.json();
         if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
@@ -238,14 +248,22 @@ class AIService {
         }
 
         if (data.error) {
-          lastError = data.error.message || JSON.stringify(data.error);
+          if (data.error.code === 429 || data.error.status === 'RESOURCE_EXHAUSTED') {
+            isRateLimited = true;
+            break;
+          }
+          lastError = data.error.message;
         }
       } catch (err) {
         lastError = err.message;
       }
     }
 
-    throw new Error(lastError || 'Não foi possível obter resposta do Google Gemini API. Verifique sua chave.');
+    if (isRateLimited) {
+      throw new Error('Limite de cota de requisições excedido no Google Gemini (Erro 429 - Rate Limit). Aguarde 1 minuto e tente novamente.');
+    }
+
+    throw new Error(lastError || 'Não foi possível obter resposta do Google Gemini API. Verifique se a sua chave está ativa no Google AI Studio.');
   }
 }
 
