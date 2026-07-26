@@ -5,12 +5,15 @@
  * Toda autenticação com provedores de IA é feita server-side via process.env.
  */
 
+// URL padrão do backend — já configurada para produção
+const DEFAULT_BACKEND_URL = 'https://sidarta-pages.onrender.com';
+
 class AIService {
   constructor() {
-    // Lê a URL do backend da configuração global ou localStorage (apenas a URL, não a chave)
+    // Prioridade: window.BACKEND_URL > localStorage > DEFAULT_BACKEND_URL
     this.backendUrl = (typeof window !== 'undefined' && window.BACKEND_URL)
       ? window.BACKEND_URL
-      : '';
+      : DEFAULT_BACKEND_URL;
     this.defaultProvider = 'gemini';
     this.defaultModel = 'gemini-flash-latest';
     this._initialized = false;
@@ -47,6 +50,9 @@ class AIService {
         }
       } catch (e) { /* ignora */ }
     }
+
+    // Garante que sempre há um backend configurado
+    if (!this.backendUrl) this.backendUrl = DEFAULT_BACKEND_URL;
   }
 
   /**
