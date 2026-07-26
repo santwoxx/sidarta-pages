@@ -1200,6 +1200,18 @@ Como este código será renderizado diretamente em um iframe de preview sem bund
         cleanResponse = response.replace(/```html/gi, '').replace(/```/g, '');
       }
 
+      // Se houver um modelo base, garantir que imagens, scripts e CSS relativos funcionem no iframe (injetando <base href>)
+      if (matchedTemplate) {
+        const baseHref = matchedTemplate.path.substring(0, matchedTemplate.path.lastIndexOf('/') + 1);
+        // Tenta injetar logo apôs o <head>
+        if (cleanResponse.match(/<head>/i)) {
+          cleanResponse = cleanResponse.replace(/(<head>)/i, `$1\n  <base href="${baseHref}">`);
+        } else {
+          // Se não tiver <head> explícito (raro), coloca após o <html>
+          cleanResponse = cleanResponse.replace(/(<html[^>]*>)/i, `$1\n<head><base href="${baseHref}"></head>`);
+        }
+      }
+
       lastGeneratedHtml = cleanResponse;
 
       addMessage("Site gerado com sucesso! Já está disponível no preview.", false);
