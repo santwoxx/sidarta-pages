@@ -1,0 +1,710 @@
+<!DOCTYPE html><html lang="en" data-theme="titan"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Early theme restore: applies the saved color theme before first paint (no flash, no GSAP dependency) -->
+  <script>try{Object.keys(localStorage).filter(function(k){return k.indexOf('atlas-')===0;}).forEach(function(k){localStorage.removeItem(k);});}catch(e){}document.documentElement.dataset.theme='titan';</script>
+  <title>ATLAS — Engineering Your Movement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">ATLAS</a>
+  <div class="nav-links">
+    <a href="#team">Our Team</a>
+    <a href="#specialties">Specialties</a>
+    <a href="#technology">Technology</a>
+  </div>
+  <a href="#cta" class="nav-cta">Book Now</a>
+</nav>
+
+<!-- Theme switcher (fixed bottom-right) -->
+<div id="global-theme-sw">
+  <button class="theme-btn active" data-theme="titan">TITAN</button>
+  <button class="theme-btn" data-theme="noir">NOIR</button>
+  <button class="theme-btn" data-theme="crystal">CRYSTAL</button>
+  <button class="theme-btn" data-theme="blanc">BLANC</button>
+  <button class="theme-btn" data-theme="duo">DUO</button>
+  <button class="theme-btn" data-theme="verde">VERDE</button>
+  <button class="theme-btn" data-theme="azur">AZUR</button>
+  <button class="theme-btn" data-theme="amber">AMBER</button>
+</div>
+
+<!-- S1: HERO — Digital Spine Split -->
+<section id="hero">
+  <div class="vsw" id="hero-spine-sw">
+    <button class="vsw-btn" data-spine="A">A</button>
+    <button class="vsw-btn active" data-spine="B">B</button>
+    <button class="vsw-btn" data-spine="C">C</button>
+  </div>
+  <video id="spine-hero-img" autoplay="" muted="" playsinline="" preload="auto" poster="assets/images/spine-poster.jpg">
+    <source src="media/spine-buildup-v1.mp4" type="video/mp4">
+  </video>
+  <video id="spine-hero-img-rev" muted="" playsinline="" preload="none" style="display:none;">
+    <source src="media/spine-buildup-v1-rev.mp4" type="video/mp4">
+  </video>
+  <div class="hero-split">
+    <div class="hero-left">
+      <span class="hero-eyebrow">ORTHOPEDIC EXCELLENCE</span>
+      <h1 class="hero-title">ATLAS</h1>
+      <p class="hero-sub">Engineering Your Movement</p>
+      <p class="hero-tagline">Spine · Joints · Sports · Recovery</p>
+      <div class="hero-btns">
+        <a href="#cta" class="hero-btn-primary">Book Consultation</a>
+        <a href="#character-select" class="hero-btn-ghost">Meet the Specialists</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-accent-line"></div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TEAM INTRO VIDEO (placeholder: clinic-team.webp — replace with hero-team.mp4) -->
+<section id="team-intro">
+  <div class="ti-inner">
+    <img class="ti-fallback" src="images/clinic-team.webp" alt="ATLAS Team">
+    <video class="ti-video" muted="" loop="" playsinline="" preload="none" data-lazy-src="assets/videos/hero-team.mp4"></video>
+    <div class="ti-scrim"></div>
+    <div class="ti-text">
+      <h2 class="ti-heading">ATLAS</h2>
+      <span class="ti-eyebrow">Engineering Your Movement</span>
+    </div>
+  </div>
+</section>
+
+<!-- S2: CHARACTER SELECT -->
+<section id="character-select" data-cv="v4">
+
+  <div id="cs-stage">
+    <img id="cs-stage-bg" src="images/clinic-bg.webp" alt="" onerror="this.style.display='none'">
+    <div class="vsw" id="cs-vsw">
+      <button class="vsw-btn" data-cv="v1">V1</button>
+      <button class="vsw-btn" data-cv="v2">V2</button>
+      <button class="vsw-btn" data-cv="v3">V3</button>
+      <button class="vsw-btn active" data-cv="v4">V4</button>
+      <button class="vsw-btn" data-cv="v5" title="Spotlight + Aura">V5</button>
+      <button class="vsw-btn" data-cv="v6" title="Spotlight Stage">V6</button>
+      <button class="vsw-btn" data-cv="v7" title="Holographic">V7</button>
+      <button class="vsw-btn" data-cv="v8" title="Signature Aura">V8</button>
+      <button class="vsw-btn" data-cv="v9" title="Parallax Depth">V9</button>
+      <button class="vsw-btn" data-cv="v10" title="Cinematic Camera">V10</button>
+    </div>
+    <div id="zone-ring"></div>
+    <div id="ground-line"></div>
+    <div id="cs-heading">
+      <span class="cs-eyebrow">The Specialists</span>
+      <h2 class="cs-headline">Choose Your Specialist</h2>
+      <span class="cs-hint">Tap a portrait — or use ← → — to meet each expert</span>
+    </div>
+    <!-- chars + hotspots injected by JS -->
+    <div id="cs-info-panel">
+      <div id="cs-doc-specialty"></div>
+      <div id="cs-doc-name"></div>
+      <div class="cs-nav" id="cs-nav">
+        <button class="cs-arrow" id="cs-prev" type="button" aria-label="Previous specialist">9</button>
+        <span class="cs-nav-label">Swipe</span>
+        <button class="cs-arrow" id="cs-next" type="button" aria-label="Next specialist">:</button>
+      </div>
+      <button id="cs-mobile-hint" type="button"><span>Tap for full profile</span> �</button>
+      <div id="cs-doc-bio"></div>
+      <div id="cs-doc-stats">
+        <div class="cs-stat-row"><span class="cs-stat-label">Precision</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-stat-pre"></div></div><span class="cs-stat-val" id="cs-stat-pre-val"></span></div>
+        <div class="cs-stat-row"><span class="cs-stat-label">Technique</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-stat-tec"></div></div><span class="cs-stat-val" id="cs-stat-tec-val"></span></div>
+        <div class="cs-stat-row"><span class="cs-stat-label">Experience</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-stat-exp"></div></div><span class="cs-stat-val" id="cs-stat-exp-val"></span></div>
+      </div>
+      <button id="cs-book-btn">Book Appointment →</button>
+    </div>
+    <div id="doctor-hud">
+      <div class="hud-title">Specialists</div>
+    </div>
+    <div id="cs-bottombar">
+      <div id="cs-counter">
+        <span id="cs-counter-num">01</span>
+        <span id="cs-counter-sep">/</span>
+        <span id="cs-counter-total">05</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="cs-arrow-btn" id="cs-btn-prev">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"></path></svg>
+        </button>
+        <button class="cs-arrow-btn" id="cs-btn-next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Story/Profile Panel (outside section, body-level siblings) -->
+<div id="cs-story-overlay" onclick="closeDoctorStory()"></div>
+<div id="cs-story-panel">
+  <button id="cs-story-close" onclick="closeDoctorStory()">✕</button>
+  <div id="cs-story-media">
+    <img id="cs-story-img" alt="" loading="lazy">
+    <div id="cs-story-media-grad"></div>
+    <div id="cs-story-media-cap">
+      <div id="cs-story-specialty"></div>
+      <div id="cs-story-name"></div>
+    </div>
+  </div>
+  <div id="cs-story-body">
+    <div id="cs-story-meta">
+      <span id="cs-story-years"></span>
+      <span class="cs-meta-dot"></span>
+      <span id="cs-story-edu"></span>
+    </div>
+    <p id="cs-story-quote"></p>
+    <p id="cs-story-bio"></p>
+    <div id="cs-story-cases"></div>
+    <div class="cs-story-label">Signature Treatments</div>
+    <div id="cs-story-treatments"></div>
+    <div class="cs-story-label">Expertise</div>
+    <div id="cs-story-stats">
+      <div class="cs-stat-row"><span class="cs-stat-label">Precision</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-st-pre"></div></div><span class="cs-stat-val" id="cs-st-pre-val"></span></div>
+      <div class="cs-stat-row"><span class="cs-stat-label">Technique</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-st-tec"></div></div><span class="cs-stat-val" id="cs-st-tec-val"></span></div>
+      <div class="cs-stat-row"><span class="cs-stat-label">Experience</span><div class="cs-stat-track"><div class="cs-stat-fill" id="cs-st-exp"></div></div><span class="cs-stat-val" id="cs-st-exp-val"></span></div>
+    </div>
+    <button id="cs-story-book">Book Appointment →</button>
+  </div>
+</div>
+
+<!-- Gallery result modal -->
+<div id="gal-modal">
+  <div class="gal-modal-overlay" onclick="closeGalleryModal()"></div>
+  <div class="gal-modal-panel">
+    <button class="gal-modal-close" onclick="closeGalleryModal()">✕</button>
+    <div class="gal-modal-img"><img id="gal-modal-photo" alt=""></div>
+    <div class="gal-modal-body">
+      <div class="gal-modal-tag">✦ Result Story</div>
+      <h3 id="gal-modal-title"></h3>
+      <div id="gal-modal-detail"></div>
+      <p id="gal-modal-story"></p>
+      <a href="#cta" class="gal-modal-cta" onclick="closeGalleryModal()">Start your recovery →</a>
+    </div>
+  </div>
+</div>
+
+<!-- S2b: THE FULL TEAM -->
+<section id="team" data-tv="v3">
+  <div class="vsw" data-section="team" id="team-vsw">
+    <button class="vsw-btn" data-tv="v1">V1</button>
+    <button class="vsw-btn" data-tv="v2">V2</button>
+    <button class="vsw-btn active" data-tv="v3">V3</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Our People</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">The People Behind Your Recovery</h2>
+  </div>
+  <div class="team-grid" id="teamGrid"></div>
+</section>
+
+<!-- S3: SPECIALTIES -->
+<section id="specialties" data-v="v2">
+  <div class="vsw" data-section="specialties">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Our Specialties</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">Every Joint. Every Bone. Every Step.</h2>
+  </div>
+  <div class="specialties-grid" id="specialtiesGrid"></div>
+</section>
+
+<!-- S4: TECHNOLOGY -->
+<section id="technology" data-v="v3">
+  <div class="vsw" data-section="technology">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Technology</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">Precision, Engineered</h2>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card reveal" data-num="01">
+      <div class="tech-photo"><img src="images/tech-mri.webp" alt="High-Field MRI" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="20" cy="20" r="14" stroke-dasharray="4 3"></circle>
+          <circle cx="20" cy="20" r="5"></circle>
+          <line x1="20" y1="1" x2="20" y2="7"></line>
+          <line x1="33" y1="20" x2="39" y2="20"></line>
+          <line x1="20" y1="33" x2="20" y2="39"></line>
+          <line x1="1" y1="20" x2="7" y2="20"></line>
+        </svg>
+      </div>
+      <h3 class="tech-title">High-Field MRI</h3>
+      <p class="tech-desc">Detailed soft-tissue and disc imaging without radiation — the gold standard for diagnosing spine, joint and ligament pathology.</p>
+    </div>
+    <div class="tech-card reveal" data-num="02">
+      <div class="tech-photo"><img src="images/tech-xray.webp" alt="Digital X-ray / EOS" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="8" width="36" height="24" rx="2"></rect>
+          <polyline points="7,26 13,18 19,22 25,14 33,20"></polyline>
+        </svg>
+      </div>
+      <h3 class="tech-title">Digital X-ray / EOS</h3>
+      <p class="tech-desc">Low-dose full-body weight-bearing imaging of the spine and joints — providing the standing posture data critical for surgical planning.</p>
+    </div>
+    <div class="tech-card reveal" data-num="03">
+      <div class="tech-photo"><img src="images/tech-mako.webp" alt="Surgical Robotics" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="20" cy="16" r="10"></circle>
+          <path d="M12 30 C12 24 28 24 28 30"></path>
+          <circle cx="20" cy="16" r="3" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </div>
+      <h3 class="tech-title">Surgical Robotics</h3>
+      <p class="tech-desc">Mako robotic-arm navigation for millimeter-precise joint replacement — patient-specific planning executed with sub-millimeter accuracy intraoperatively.</p>
+    </div>
+    <div class="tech-card reveal" data-num="04">
+      <div class="tech-photo"><img src="images/tech-shockwave.webp" alt="Shockwave Unit" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 20 Q10 8 16 20 Q22 32 28 20 Q34 8 38 20"></path>
+          <line x1="20" y1="4" x2="20" y2="10"></line>
+          <line x1="20" y1="30" x2="20" y2="36"></line>
+        </svg>
+      </div>
+      <h3 class="tech-title">Shockwave Unit</h3>
+      <p class="tech-desc">Focused acoustic therapy for chronic tendon and bone conditions — non-invasive, no anaesthesia, proven results for calcific tendinitis and plantar fasciitis.</p>
+    </div>
+    <div class="tech-card reveal" data-num="05">
+      <div class="tech-photo"><img src="images/tech-gait.webp" alt="Motion Lab" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="20" cy="8" r="4"></circle>
+          <path d="M20 12 L18 22 L14 30"></path>
+          <path d="M20 12 L22 22 L26 30"></path>
+          <path d="M18 18 L24 18"></path>
+        </svg>
+      </div>
+      <h3 class="tech-title">Motion Lab</h3>
+      <p class="tech-desc">Sensor-based gait and posture analysis — revealing how you load your joints and where movement deviations cause pain, forming the blueprint for targeted treatment.</p>
+    </div>
+    <div class="tech-card reveal" data-num="06">
+      <div class="tech-photo"><img src="images/tech-navigation.webp" alt="Intraoperative Navigation" loading="lazy"></div>
+      <div class="tech-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="20" cy="20" r="12"></circle>
+          <circle cx="20" cy="20" r="3"></circle>
+          <line x1="20" y1="8" x2="20" y2="4"></line>
+          <line x1="20" y1="32" x2="20" y2="36"></line>
+          <line x1="8" y1="20" x2="4" y2="20"></line>
+          <line x1="32" y1="20" x2="36" y2="20"></line>
+        </svg>
+      </div>
+      <h3 class="tech-title">Intraoperative Navigation</h3>
+      <p class="tech-desc">Real-time GPS-precision tracking during surgery — our navigation system maps bone anatomy in 3D, guiding implant placement to sub-millimetre accuracy for optimal alignment and longevity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5: JOURNEY -->
+<section id="journey" data-v="v8">
+  <div class="vsw" data-section="journey">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+    <button class="vsw-btn" data-v="v4">V4</button>
+    <button class="vsw-btn" data-v="v5">V5</button>
+    <button class="vsw-btn" data-v="v6">V6</button>
+    <button class="vsw-btn" data-v="v7">V7</button>
+    <button class="vsw-btn" data-v="v8">V8</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Your Journey</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">From First Visit to Full Movement</h2>
+  </div>
+  <div class="journey-steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Consultation</h3>
+      <p class="step-desc">We listen first. Full medical history, physical examination and a frank discussion of your goals — before any imaging or planning begins.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Imaging & Diagnosis</h3>
+      <p class="step-desc">MRI, X-ray or EOS imaging delivers a precise diagnosis you can see and understand. No guesswork — only evidence-based findings.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Treatment</h3>
+      <p class="step-desc">Conservative or surgical — always tailored to you. We choose the least invasive path that achieves the best outcome for your body and lifestyle.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Recovery</h3>
+      <p class="step-desc">Physiotherapy, follow-up imaging and lifetime check-ins. We stay with you until you move freely — and beyond.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5b: STATS -->
+<section id="stats" data-v="v6">
+  <div class="vsw" data-section="stats">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+    <button class="vsw-btn" data-v="v4">V4</button>
+    <button class="vsw-btn" data-v="v5">V5</button>
+    <button class="vsw-btn" data-v="v6">V6</button>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <svg class="stat-bg-icon" viewBox="0 0 100 140" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="25" y="8" width="50" height="14" rx="4"></rect>
+        <rect x="28" y="30" width="44" height="13" rx="4"></rect>
+        <rect x="31" y="51" width="38" height="13" rx="4"></rect>
+        <rect x="34" y="72" width="32" height="13" rx="4"></rect>
+        <rect x="37" y="93" width="26" height="13" rx="4"></rect>
+        <line x1="50" y1="22" x2="50" y2="30"></line>
+        <line x1="50" y1="43" x2="50" y2="51"></line>
+        <line x1="50" y1="64" x2="50" y2="72"></line>
+        <line x1="50" y1="85" x2="50" y2="93"></line>
+        <line x1="30" y1="15" x2="20" y2="15"></line><line x1="70" y1="15" x2="80" y2="15"></line>
+        <line x1="28" y1="36" x2="18" y2="36"></line><line x1="72" y1="36" x2="82" y2="36"></line>
+      </svg>
+      <div class="stat-row">
+        <div class="stat-num" data-target="8400">0</div>
+        <div class="stat-unit">+</div>
+      </div>
+      <div class="stat-label">Procedures</div>
+    </div>
+    <div class="stat-item reveal">
+      <svg class="stat-bg-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="50" cy="50" r="42"></circle>
+        <circle cx="50" cy="50" r="34" stroke-dasharray="7 4"></circle>
+        <circle cx="50" cy="50" r="4" fill="currentColor" stroke="none"></circle>
+        <line x1="50" y1="50" x2="50" y2="18" stroke-width="2"></line>
+        <line x1="50" y1="50" x2="72" y2="50" stroke-width="2"></line>
+        <line x1="50" y1="8" x2="50" y2="14"></line>
+        <line x1="92" y1="50" x2="86" y2="50"></line>
+        <line x1="50" y1="92" x2="50" y2="86"></line>
+        <line x1="8" y1="50" x2="14" y2="50"></line>
+      </svg>
+      <div class="stat-row">
+        <div class="stat-num" data-target="16">0</div>
+        <div class="stat-unit">Yrs</div>
+      </div>
+      <div class="stat-label">Avg. Experience</div>
+    </div>
+    <div class="stat-item reveal">
+      <svg class="stat-bg-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="50" cy="50" r="42"></circle>
+        <path d="M50 8 A42 42 0 1 1 9.9 71" stroke-width="2.5" stroke-dasharray="263 10" stroke-linecap="round"></path>
+        <polyline points="26,52 40,66 74,34" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      </svg>
+      <div class="stat-row">
+        <div class="stat-num" data-target="98">0</div>
+        <div class="stat-unit">%</div>
+      </div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat-item reveal">
+      <svg class="stat-bg-icon" viewBox="0 0 130 80" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="18" cy="18" r="9"></circle><path d="M4 72 C4 52 32 52 32 72"></path>
+        <circle cx="38" cy="16" r="9"></circle><path d="M24 72 C24 50 52 50 52 72"></path>
+        <circle cx="65" cy="14" r="10"></circle><path d="M50 72 C50 48 80 48 80 72"></path>
+        <circle cx="92" cy="16" r="9"></circle><path d="M78 72 C78 50 106 50 106 72"></path>
+        <circle cx="112" cy="18" r="9"></circle><path d="M98 72 C98 52 126 52 126 72"></path>
+      </svg>
+      <div class="stat-row">
+        <div class="stat-num" data-target="5">0</div>
+        <div class="stat-unit"></div>
+      </div>
+      <div class="stat-label">Specialists</div>
+    </div>
+  </div>
+</section>
+
+<!-- S6: GALLERY -->
+<section id="gallery" data-v="v2">
+  <div class="vsw" data-section="gallery">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Results</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">Back in Motion</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-spine.webp" alt="Spine Decompression Result" loading="lazy">
+      <div class="gallery-treatment">Spine Decompression</div>
+      <div class="gallery-detail">Herniated L4/L5 · microsurgery · Dr. Brandt</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-knee.webp" alt="Knee Replacement Result" loading="lazy">
+      <div class="gallery-treatment">Knee Replacement</div>
+      <div class="gallery-detail">Robotic total knee · 1 day to walking · Dr. Hoffmann</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-posture.webp" alt="Posture Correction Result" loading="lazy">
+      <div class="gallery-treatment">Posture Correction</div>
+      <div class="gallery-detail">Scoliosis bracing & therapy · Dr. Brandt</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-mobility.webp" alt="Back to Running Result" loading="lazy">
+      <div class="gallery-treatment">Back to Running</div>
+      <div class="gallery-detail">ACL reconstruction · full return · Dr. Wagner</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-hip.webp" alt="Hip Endoprosthesis Result" loading="lazy">
+      <div class="gallery-treatment">Hip Endoprosthesis</div>
+      <div class="gallery-detail">Minimally invasive · pain-free · Dr. Hoffmann</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+    <div class="gallery-card reveal has-photo">
+      <img class="gallery-photo" src="images/gallery-rehab.webp" alt="Full Recovery Result" loading="lazy">
+      <div class="gallery-treatment">Full Recovery</div>
+      <div class="gallery-detail">Multi-stage rehabilitation · Full Team</div>
+      <div class="gallery-tag-new">✦ Result</div>
+    </div>
+  </div>
+</section>
+
+<!-- S7: TESTIMONIALS -->
+<section id="testimonials" data-v="v3">
+  <div class="vsw" data-section="testimonials">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+  </div>
+  <div class="section-header reveal">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="section-label" style="margin:0">Testimonials</span>
+      <div class="divider-line"></div>
+    </div>
+    <h2 class="section-title">What Our Patients Say</h2>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <img class="test-avatar" src="images/testimonial-male.webp" alt="Michael R." loading="lazy">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">"Dr. Brandt gave me my life back. Nine months of sciatica — gone the morning after surgery. I walked out of the clinic the next day."</p>
+      <div class="test-meta">
+        <span class="test-name">Michael R.</span>
+        <span class="test-treatment">Spine Surgery</span>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <img class="test-avatar" src="images/testimonial-female-1.webp" alt="Sarah K." loading="lazy">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">"I was walking the day of my knee replacement. Dr. Hoffmann's robotic technique was extraordinary — I honestly forget which knee was replaced."</p>
+      <div class="test-meta">
+        <span class="test-name">Sarah K.</span>
+        <span class="test-treatment">Knee Replacement</span>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <img class="test-avatar" src="images/testimonial-female-2.webp" alt="Lena M." loading="lazy">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">"Seven months after my ACL surgery with Dr. Wagner I ran a half-marathon personal best. Stronger than before the injury. Unbelievable."</p>
+      <div class="test-meta">
+        <span class="test-name">Lena M.</span>
+        <span class="test-treatment">ACL Reconstruction</span>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <img class="test-avatar" src="images/testimonial-james.webp" alt="James T." loading="lazy">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">"Dr. Reuter kept me out of the operating room entirely. Three shockwave sessions and the tendon pain I'd had for two years was gone."</p>
+      <div class="test-meta">
+        <span class="test-name">James T.</span>
+        <span class="test-treatment">Shockwave Therapy</span>
+      </div>
+    </div>
+  </div>
+  <div class="test-nav" id="testNav">
+    <button class="test-arrow" id="test-prev" aria-label="Previous review">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"></path></svg>
+    </button>
+    <div class="test-dots" id="test-dots"></div>
+    <button class="test-arrow" id="test-next" aria-label="Next review">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"></path></svg>
+    </button>
+  </div>
+</section>
+
+<!-- S8: CTA -->
+<section id="cta" data-v="v3">
+  <div class="cta-bg"></div>
+  <div class="vsw" data-section="cta">
+    <button class="vsw-btn" data-v="v1">V1</button>
+    <button class="vsw-btn" data-v="v2">V2</button>
+    <button class="vsw-btn" data-v="v3">V3</button>
+  </div>
+  <p class="cta-label reveal">Ready?</p>
+  <h2 class="cta-title reveal">Move Without Limits.<br>Live Without Pain.</h2>
+  <p class="cta-sub reveal">Your first consultation is on us.</p>
+  <div class="cta-book reveal" id="ctaBook">
+    <div class="bk-field">
+      <label class="bk-label">1 · Treatment</label>
+      <div class="bk-dd" id="bk-treatment">
+        <button type="button" class="bk-dd-btn" id="bk-dd-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span class="bk-dd-val" data-placeholder="true">Select treatment</span>
+          <svg class="bk-dd-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <ul class="bk-dd-list" id="bk-dd-list" role="listbox">
+          <li class="bk-dd-opt" role="option">Herniated Disc Surgery</li>
+          <li class="bk-dd-opt" role="option">Knee & Hip Replacement</li>
+          <li class="bk-dd-opt" role="option">Arthroscopy</li>
+          <li class="bk-dd-opt" role="option">Shockwave Therapy</li>
+          <li class="bk-dd-opt" role="option">Spinal Injections</li>
+          <li class="bk-dd-opt" role="option">Sports Injuries</li>
+          <li class="bk-dd-opt" role="option">Osteoporosis Therapy</li>
+          <li class="bk-dd-opt" role="option">Gait Analysis</li>
+          <li class="bk-dd-opt" role="option">General Consultation</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bk-grid">
+      <div class="bk-cal">
+        <label class="bk-label">2 · Date</label>
+        <div class="cal-head">
+          <button type="button" id="cal-prev" aria-label="Previous month">‹</button>
+          <span id="cal-month"></span>
+          <button type="button" id="cal-next" aria-label="Next month">›</button>
+        </div>
+        <div class="cal-weekdays"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="bk-times">
+        <label class="bk-label">3 · Time</label>
+        <div class="slot-grid" id="slot-grid"><span class="slot-hint">Pick a date first</span></div>
+        <div class="bk-summary" id="bk-summary"></div>
+      </div>
+    </div>
+    <div class="bk-actions">
+      <a class="bk-wa" id="bk-wa" href="https://wa.me/491234567890?text=Hi%20ATLAS%2C%20I%27d%20like%20to%20book%20an%20appointment." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.043zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg>
+        Book via WhatsApp
+      </a>
+      <button type="button" class="bk-confirm" id="bk-confirm">Confirm Booking →</button>
+    </div>
+    <p class="cta-note">No obligation · Free first consultation · Confirmation within 24h</p>
+  </div>
+  <div class="cta-success" id="ctaSuccess">✓ Your request is in — we'll confirm your appointment within 24 hours.</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <span class="footer-logo">ATLAS</span>
+    <nav class="footer-links">
+      <a href="#hero" class="footer-link">Home</a>
+      <a href="#character-select" class="footer-link">Our Team</a>
+      <a href="#specialties" class="footer-link">Specialties</a>
+      <a href="#technology" class="footer-link">Technology</a>
+      <a href="#cta" class="footer-link">Book Now</a>
+    </nav>
+    <div class="footer-social">
+      <a href="#" aria-label="Instagram">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </a>
+      <a href="#">INSTAGRAM</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© <span id="footer-year">2026</span> ATLAS Orthopedics. All rights reserved.</span>
+    <span class="footer-copy footer-tagline">Engineering Your Movement</span>
+  </div>
+</footer>
+
+<!-- Floating WhatsApp button (global) -->
+<a id="wa-float" href="https://wa.me/491234567890?text=Hi%20ATLAS%2C%20I%27d%20like%20to%20book%20an%20appointment." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.043zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg>
+</a>
+
+<!-- Treatment detail panel (slides in from the right, like the patient story) -->
+<div id="tx-overlay" onclick="closeTx()"></div>
+<aside id="tx-panel" aria-label="Treatment details">
+  <button id="tx-close" onclick="closeTx()" aria-label="Close">✕</button>
+  <div id="tx-media">
+    <img id="tx-img" alt="" loading="lazy">
+    <div id="tx-media-grad"></div>
+    <div id="tx-media-cap">
+      <div id="tx-tag"></div>
+      <div id="tx-name"></div>
+    </div>
+  </div>
+  <div id="tx-body">
+    <p id="tx-desc"></p>
+    <div class="tx-label">What's included</div>
+    <ul id="tx-benefits"></ul>
+    <div id="tx-meta"></div>
+    <a id="tx-book" href="#cta" onclick="closeTx()">Book a Consultation →</a>
+  </div>
+</aside>
+
+<!-- Early variant restore: applies saved per-section / character-select / team variants
+     onto the already-parsed sections BEFORE GSAP + app.js, so the chosen layout shows
+     immediately and survives even if a CDN script is slow or fails. -->
+<script>
+(function(){
+  try{
+    ['specialties','technology','journey','stats','gallery','testimonials','cta'].forEach(function(id){
+      var v=localStorage.getItem('atlas-v-'+id), el=document.getElementById(id);
+      if(v&&el) el.dataset.v=v;
+    });
+    var cs=document.getElementById('character-select'), cv=localStorage.getItem('atlas-cv');
+    if(cs&&cv) cs.dataset.cv=cv;
+    var tm=document.getElementById('team'), tv=localStorage.getItem('atlas-tv');
+    if(tm&&tv) tm.dataset.tv=tv;
+  }catch(e){}
+})();
+</script>
+
+<!-- SCRIPTS -->
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script src="js/app.js"></script>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+
+
+</body></html>

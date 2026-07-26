@@ -71,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const TEMPLATES = {
-    pizza: { name: 'Pizzaria Premium', path: '../modelos/pizza/index.html' }
+    pizza: { name: 'Pizzaria Premium', path: '../modelos/pizza/index.html' },
+    clinica: { name: 'Clínica Médica', path: '../modelos/clinica medica/index.html' },
+    cosmeticos: { name: 'Cosméticos Premium', path: '../modelos/cosmeticos femininos/index.html' }
   };
 
   // ─── VIEW SWITCHING ───
