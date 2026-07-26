@@ -50,13 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const navDashboard = document.getElementById('nav-dashboard');
   const navCreate = document.getElementById('nav-create');
-
+  const navTools = document.getElementById('nav-tools');
+  const toolsView = document.getElementById('tools-view');
   // --- Navegação Lateral ---
   if (navDashboard && navCreate) {
     navDashboard.addEventListener('click', (e) => {
       e.preventDefault();
       navDashboard.classList.add('active');
       navCreate.classList.remove('active');
+      if (navTools) navTools.classList.remove('active');
       if (createView) createView.classList.add('hidden');
       switchView(mainView);
     });
@@ -65,8 +67,54 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       navCreate.classList.add('active');
       navDashboard.classList.remove('active');
-      [mainView, previewView, editorView].forEach(v => v.classList.add('hidden'));
+      if (navTools) navTools.classList.remove('active');
+      [mainView, previewView, editorView, toolsView].forEach(v => { if(v) v.classList.add('hidden') });
       if (createView) createView.classList.remove('hidden');
+    });
+  }
+
+  if (navTools && toolsView) {
+    navTools.addEventListener('click', async (e) => {
+      e.preventDefault();
+      navTools.classList.add('active');
+      if (navDashboard) navDashboard.classList.remove('active');
+      if (navCreate) navCreate.classList.remove('active');
+      if (createView) createView.classList.add('hidden');
+      switchView(toolsView);
+      
+      // Carregar e popular as skills no grid
+      const toolsGrid = document.getElementById('tools-grid');
+      if (toolsGrid && toolsGrid.children.length === 0) {
+        toolsGrid.innerHTML = '<p style="color:var(--text-secondary)">Carregando ferramentas...</p>';
+        try {
+          const { sidartaSkills } = await import('../services/skills.js');
+          let html = '';
+          for (const key in sidartaSkills) {
+            const s = sidartaSkills[key];
+            html += `
+              <div class="tool-card" data-skill="${key}">
+                <div class="tool-icon">${s.icon}</div>
+                <div class="tool-name">${s.name}</div>
+                <div class="tool-desc">${s.desc}</div>
+              </div>
+            `;
+          }
+          toolsGrid.innerHTML = html;
+          
+          toolsGrid.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('click', () => {
+              const skillId = card.getAttribute('data-skill');
+              activeSkillId = skillId;
+              input.value = `Gere o site utilizando a skill: ${sidartaSkills[skillId].name}`;
+              input.dispatchEvent(new Event('input'));
+              // Retornar para a view principal para o usuário enviar o prompt se quiser
+              navDashboard.click();
+            });
+          });
+        } catch (err) {
+          toolsGrid.innerHTML = '<p style="color:red">Erro ao carregar as ferramentas.</p>';
+        }
+      }
     });
   }
 
@@ -79,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── VIEW SWITCHING ───
   function switchView(view) {
-    [mainView, previewView, editorView].forEach(v => v.classList.add('hidden'));
-    view.classList.remove('hidden');
+    [mainView, previewView, editorView, toolsView].forEach(v => { if(v) v.classList.add('hidden') });
+    if (view) view.classList.remove('hidden');
   }
 
   btnBack.addEventListener('click', () => switchView(mainView));

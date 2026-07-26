@@ -1172,3 +1172,12 @@ body {
 .tab-content { display: block; }
 .tab-content.hidden { display: none !important; }
 
+
+/* --- TOOLS GRID --- */
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
+.tool-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; }
+.tool-card:hover { transform: translateY(-4px); border-color: var(--accent-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.tool-icon { font-size: 24px; margin-bottom: 12px; background: rgba(124, 58, 237, 0.1); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.tool-name { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.tool-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+
