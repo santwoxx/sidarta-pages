@@ -1,10 +1,10 @@
-import { supabase } from '../supabase-config.js';
+import { supabase } from '/supabase-config.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Verificação de Segurança (Opcional, exige que o Admin faça login)
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
-    window.location.href = '../login.html';
+    window.location.href = '/login.html';
   }
 
   // 2. Navegação da Sidebar
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 3. Botão Voltar ao Dashboard
   document.getElementById('btn-back-dashboard').addEventListener('click', () => {
-    window.location.href = '../dashboard/index.html';
+    window.location.href = '/dashboard/index.html';
   });
 
   // 4. Lógica de AI Keys (Salvar e Carregar)
