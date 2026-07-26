@@ -6,6 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // Atualizar dados do usuário na sidebar (novo design)
+  if (localUser.email) {
+    const emailDisplay = document.getElementById('user-email-display');
+    const avatarDisplay = document.getElementById('user-avatar');
+    if (emailDisplay) emailDisplay.textContent = localUser.email;
+    if (avatarDisplay) avatarDisplay.textContent = localUser.email.substring(0, 2).toUpperCase();
+  }
+
+
   const btnSend = document.getElementById('btn-send-prompt');
   const input = document.getElementById('prompt-input');
   const chatMessages = document.getElementById('chat-messages');
@@ -15,9 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnBack = document.getElementById('btn-back-dashboard');
   const loadingIndicator = document.getElementById('loading-indicator');
   const previewIframe = document.getElementById('preview-iframe');
-  const templateCards = document.querySelectorAll('.template-card');
   const btnBackEditor = document.getElementById('btn-back-from-editor');
   const createView = document.getElementById('create-view');
+  
+  const templateCards = document.querySelectorAll('.template-card, .template-card-modern');
   
   const navDashboard = document.getElementById('nav-dashboard');
   const navCreate = document.getElementById('nav-create');

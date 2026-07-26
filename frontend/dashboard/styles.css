@@ -1,17 +1,17 @@
 :root {
-  --bg-main: #0f111a;
-  --bg-sidebar: #161925;
-  --bg-assistant: #161925;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --text-primary: #f8f9fa;
-  --text-secondary: #adb5bd;
-  --accent-color: #0d6efd;
-  --accent-hover: #0b5ed7;
-  --accent-gradient: linear-gradient(135deg, #0d6efd, #4db8ff);
-  --shadow-sm: 0 4px 12px rgba(0,0,0,0.2);
-  --shadow-glow: 0 0 20px rgba(13, 110, 253, 0.4);
+  --bg-main: #0a0a0a;
+  --bg-sidebar: #111111;
+  --bg-assistant: #111111;
+  --bg-card: #1c1c1e;
+  --bg-card-hover: #2c2c2e;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --accent-color: #7C3AED;
+  --accent-hover: #6d28d9;
+  --accent-gradient: linear-gradient(135deg, #7C3AED, #9f67ff);
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 40px rgba(124, 58, 237, 0.2);
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -1138,3 +1138,28 @@ body {
 .mock-page {
   height: 400px;
 }
+
+/* --- NOVA IDENTIDADE VISUAL DARK/PURPLE --- */
+.logo-accent { display: inline-block; width: 12px; height: 12px; background: var(--accent-color); margin-right: 8px; border-radius: 2px; }
+.text-purple { color: var(--accent-color); }
+.chevron { margin-left: auto; opacity: 0.5; }
+.nav-divider { height: 1px; background: var(--border-color); margin: 8px 16px; }
+.hero-banner { background: transparent; padding: 64px 32px; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.hero-glow { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 60%); z-index: 0; pointer-events: none; }
+.hero-content { z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.hero-logo { display: inline-flex; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 24px; border: 1px solid var(--border-color); }
+.hero-content h1 { font-size: 42px; line-height: 1.2; font-weight: 800; text-align: center; max-width: 800px; margin-bottom: 32px; }
+.hero-actions { display: flex; gap: 16px; }
+.btn-primary-purple { background: var(--accent-color); color: #fff; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); }
+.btn-primary-purple:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+.btn-secondary-dark { background: rgba(255,255,255,0.05); color: #fff; padding: 12px 24px; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); }
+.btn-secondary-dark:hover { background: rgba(255,255,255,0.1); }
+.badge-purple { background: var(--accent-color); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.template-card-modern { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: var(--transition); cursor: pointer; }
+.template-card-modern:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.card-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.02); }
+.card-image-placeholder { height: 180px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; color: rgba(255,255,255,0.2); font-weight: 500; }
+.card-footer { padding: 16px; }
+.btn-copy-session { width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.btn-copy-session:hover { background: rgba(255,255,255,0.1); }
+
