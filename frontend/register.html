@@ -112,7 +112,7 @@
   </div>
 
   <script type="module">
-    import { supabase } from './supabase-config.js';
+    import { supabase } from '/supabase-config.js';
 
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -138,7 +138,7 @@
         err.style.display = 'block';
         btn.textContent = 'Começar Agora';
       } else {
-        window.location.href = 'dashboard/index.html';
+        window.location.href = '/dashboard/index.html';
       }
     });
   </script>

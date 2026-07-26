@@ -1,55 +1,10 @@
 {
   "version": 2,
-  "name": "sidarta-pages-frontend",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/dashboard/index.html"
-    },
-    {
-      "src": "/dashboard/(.*)",
-      "dest": "/dashboard/$1"
-    },
-    {
-      "src": "/builder/(.*)",
-      "dest": "/builder/$1"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "/admin/$1"
-    },
-    {
-      "src": "/services/(.*)",
-      "dest": "/services/$1"
-    },
-    {
-      "src": "/modelos/(.*)",
-      "dest": "/modelos/$1"
-    },
-    {
-      "src": "/login",
-      "dest": "/login.html"
-    },
-    {
-      "src": "/register",
-      "dest": "/register.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        }
-      ]
+      "source": "/",
+      "destination": "/dashboard/index.html"
     }
   ]
 }
