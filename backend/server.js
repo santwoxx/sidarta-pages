@@ -23,23 +23,21 @@ app.get('/health', (req, res) => {
 
 /**
  * Função utilitária para chamada resiliente ao Google Gemini API
- * Trata chaves AIzaSy e AQ..., retries em 429, fallbacks de modelos e mapeamento de erros HTTP.
+ * Utiliza o alias oficial ativo 'gemini-flash-latest' e 'gemini-2.0-flash' com retries em 429
+ * Aceita tanto chaves clássicas (AIzaSy...) quanto novas (AQ...) do Google AI Studio.
  */
 async function callGeminiResilient({ apiKey, prompt, systemPrompt, requestedModel }) {
-  // Lista dos modelos mantidos e ativos pelo Google AI Studio (ordenados por eficiência e suporte)
+  // Modelos ativos verificados via GET /v1beta/models
   const candidateModels = [
-    requestedModel,
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-latest',
+    'gemini-flash-latest',
     'gemini-2.0-flash',
-    'gemini-1.5-pro'
-  ].filter((m, i, self) => Boolean(m) && self.indexOf(m) === i);
+    'gemini-2.5-flash-lite',
+    'gemini-2.5-pro',
+    requestedModel
+  ].filter((m, i, self) => Boolean(m) && m !== 'gemini-1.5-flash' && self.indexOf(m) === i);
 
-  // Tentativas de API endpoint (v1beta e v1)
   const apiVersions = ['v1beta', 'v1'];
-  
-  // Configuração do Backoff Exponencial para Erro 429
-  const retryDelays = [2000, 5000, 10000]; 
+  const retryDelays = [2000, 5000, 10000];
 
   let lastErrorDetails = null;
 
@@ -54,31 +52,31 @@ async function callGeminiResilient({ apiKey, prompt, systemPrompt, requestedMode
         payload.systemInstruction = { parts: [{ text: systemPrompt }] };
       }
 
-      // Loop de Retries para 429 Rate Limit (até 3 tentativas por combinação)
       for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
         try {
-          console.log(`[Gemini API] Tentativa ${attempt + 1} -> Modelo: ${modelName} (${apiVer})`);
-          
+          console.log(`[Backend Gemini API] Requisitando modelo: ${modelName} (${apiVer}) | Tentativa ${attempt + 1}`);
+
           const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
 
+          const statusCode = response.status;
           const data = await response.json().catch(() => ({}));
 
+          // HTTP 200 OK -> Retorno de Sucesso
           if (response.ok && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+            console.log(`[Backend Gemini Success] HTTP 200 OK com modelo: ${modelName}`);
             return {
               text: data.candidates[0].content.parts[0].text,
               usedModel: modelName,
-              apiVersion: apiVer
+              apiVersion: apiVer,
+              data
             };
           }
 
-          // Mapeamento e Tratamento de Erros HTTP
-          const statusCode = response.status;
           const errorMsg = data.error?.message || data.error?.status || `HTTP ${statusCode}`;
-
           lastErrorDetails = {
             statusCode,
             message: errorMsg,
@@ -87,33 +85,31 @@ async function callGeminiResilient({ apiKey, prompt, systemPrompt, requestedMode
             data
           };
 
-          // 429 - Rate Limit (Executar Backoff Exponencial)
+          // 429 - Rate Limit (Exponential Backoff)
           if (statusCode === 429 || data.error?.status === 'RESOURCE_EXHAUSTED') {
             if (attempt < retryDelays.length) {
               const delay = retryDelays[attempt];
-              console.warn(`[Gemini API 429 Rate Limit] Aguardando ${delay / 1000}s antes da tentativa ${attempt + 2}...`);
+              console.warn(`[Gemini API 429] Aguardando ${delay / 1000}s para tentativa ${attempt + 2}...`);
               await sleep(delay);
-              continue; // Tenta a próxima tentativa do mesmo modelo
+              continue;
             }
           }
 
-          // Se for 404 (Modelo inexistente ou inválido nesta versão da API), sai do loop de retries e testa o próximo modelo
+          // 404 - Modelo não suportado nesta versão, passa para o próximo modelo candidato
           if (statusCode === 404) {
-            console.warn(`[Gemini API 404] Modelo '${modelName}' não suportado na API ${apiVer}. Tentando alternativa...`);
-            break; 
+            console.warn(`[Gemini API 404] Modelo '${modelName}' não suportado na versão ${apiVer}.`);
+            break;
           }
 
-          // Se for 401 ou 403 (Chave inválida / Sem permissão), encerra imediatamente e relata erro de autenticação
+          // 401 / 403 - Erro de Autenticação / Chave Inválida
           if (statusCode === 401 || statusCode === 403) {
-            throw { status: statusCode, userMessage: `Chave de API inválida ou sem permissão (${errorMsg}). Verifique a chave inserida no Admin.` };
+            throw { status: statusCode, userMessage: `Autenticação falhou (${errorMsg}). Verifique a chave configurada.` };
           }
 
-          // Se for outro erro, interrompe o retry desse modelo
           break;
 
         } catch (fetchErr) {
-          if (fetchErr.status) throw fetchErr; // Re-throw erro amigável de auth
-          console.error(`[Gemini API Exception]`, fetchErr);
+          if (fetchErr.status) throw fetchErr;
           lastErrorDetails = { statusCode: 500, message: fetchErr.message, model: modelName, apiVersion: apiVer };
           break;
         }
@@ -121,18 +117,17 @@ async function callGeminiResilient({ apiKey, prompt, systemPrompt, requestedMode
     }
   }
 
-  // Se esgotou todas as combinações sem sucesso
   if (lastErrorDetails) {
     if (lastErrorDetails.statusCode === 429) {
-      throw { status: 429, userMessage: 'Limite de cota de requisições excedido no Google Gemini (Erro 429 - Rate Limit). Todas as tentativas automáticas com o servidor falharam. Aguarde 1 minuto.' };
+      throw { status: 429, userMessage: 'Limite de cota de requisições excedido no Google Gemini (Erro 429 - Rate Limit). Tente novamente em 1 minuto.' };
     }
     if (lastErrorDetails.statusCode === 404) {
-      throw { status: 404, userMessage: `Modelos da API do Gemini indisponíveis ou não encontrados (${lastErrorDetails.message}).` };
+      throw { status: 404, userMessage: `Modelo da API do Gemini não encontrado (${lastErrorDetails.message}).` };
     }
-    throw { status: lastErrorDetails.statusCode || 500, userMessage: `Erro na comunicação com a API do Gemini: ${lastErrorDetails.message}`, details: lastErrorDetails };
+    throw { status: lastErrorDetails.statusCode || 500, userMessage: `Erro na API do Gemini: ${lastErrorDetails.message}`, details: lastErrorDetails };
   }
 
-  throw { status: 500, userMessage: 'Erro desconhecido ao processar requisição com Google Gemini.' };
+  throw { status: 500, userMessage: 'Erro interno ao processar requisição com Google Gemini.' };
 }
 
 // Proxy endpoint for AI completions
@@ -171,9 +166,7 @@ app.post('/api/ai/generate', async (req, res) => {
 
       const data = await response.json();
       if (!response.ok) {
-        const status = response.status;
-        console.error(`[OpenAI Error ${status}]`, data);
-        return res.status(status).json({ error: data.error?.message || `Erro na requisição OpenAI (${status})` });
+        return res.status(response.status).json({ error: data.error?.message || `Erro OpenAI (${response.status})` });
       }
 
       return res.json({ result: data.choices[0].message.content });
@@ -202,9 +195,7 @@ app.post('/api/ai/generate', async (req, res) => {
 
       const data = await response.json();
       if (!response.ok) {
-        const status = response.status;
-        console.error(`[Anthropic Error ${status}]`, data);
-        return res.status(status).json({ error: data.error?.message || `Erro na requisição Anthropic (${status})` });
+        return res.status(response.status).json({ error: data.error?.message || `Erro Anthropic (${response.status})` });
       }
 
       return res.json({ result: data.content[0].text });
@@ -222,7 +213,7 @@ app.post('/api/ai/generate', async (req, res) => {
         requestedModel: model
       });
 
-      console.log(`[Gemini Success] Modelo utilizado: ${geminiResult.usedModel} em ${Date.now() - startTime}ms`);
+      console.log(`[Gemini Success] ${geminiResult.usedModel} (${geminiResult.apiVersion}) respondido em ${Date.now() - startTime}ms`);
       return res.json({ result: geminiResult.text });
 
     } else {
@@ -233,7 +224,7 @@ app.post('/api/ai/generate', async (req, res) => {
     const statusCode = error.status || 500;
     const errorMessage = error.userMessage || error.message || 'Erro interno no processamento da Inteligência Artificial.';
     
-    console.error(`[API /api/ai/generate Status ${statusCode}]`, {
+    console.error(`[API /api/ai/generate Erro ${statusCode}]`, {
       stack: error.stack,
       details: error.details || error,
       timestamp: new Date().toISOString()

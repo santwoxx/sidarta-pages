@@ -14,7 +14,7 @@ class AIService {
       gemini: ''
     };
     this.defaultProvider = 'gemini'; // 'openai', 'anthropic', 'gemini'
-    this.defaultModel = 'gemini-1.5-flash';
+    this.defaultModel = 'gemini-flash-latest';
   }
 
   // Carrega as configurações (com suporte a chrome.storage ou localStorage)
@@ -139,7 +139,6 @@ class AIService {
           throw new Error(data.error);
         }
       } catch (backendError) {
-        // Se a mensagem for um erro retornado pelo próprio backend, lança para o usuário
         if (backendError.message && !backendError.message.includes('Failed to fetch') && !backendError.message.includes('NetworkError')) {
           throw backendError;
         }
@@ -211,8 +210,8 @@ class AIService {
   }
 
   /**
-   * Chamada direta ao Google Gemini com suporte a qualquer chave (AIzaSy ou AQ...), 
-   * retries automáticos com backoff para 429 e fallback dinâmico de modelos.
+   * Chamada direta ao Google Gemini com suporte a qualquer chave (AIzaSy... e AQ...), 
+   * retries automáticos com backoff para 429 e fallback de modelos ativos (gemini-flash-latest, gemini-2.0-flash).
    */
   async _callGeminiResilient(prompt, systemPrompt) {
     const apiKey = this.keys.gemini ? this.keys.gemini.trim() : '';
@@ -221,12 +220,11 @@ class AIService {
     }
 
     const candidateModels = [
-      this.defaultModel,
-      'gemini-1.5-flash',
-      'gemini-1.5-flash-latest',
+      'gemini-flash-latest',
       'gemini-2.0-flash',
-      'gemini-1.5-pro'
-    ].filter((m, i, self) => Boolean(m) && self.indexOf(m) === i);
+      'gemini-2.5-flash-lite',
+      'gemini-2.5-pro'
+    ];
 
     const apiVersions = ['v1beta', 'v1'];
     const retryDelays = [2000, 5000, 10000];
