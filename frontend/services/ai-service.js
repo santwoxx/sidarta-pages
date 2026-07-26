@@ -206,6 +206,9 @@ class AIService {
     if (!apiKey) {
       throw new Error('Chave de API do Gemini não configurada. Insira sua chave no Painel Admin.');
     }
+    if (!apiKey.startsWith('AIzaSy')) {
+      console.warn('Atenção: Chaves do Google Gemini API V1 normalmente começam com "AIzaSy".');
+    }
 
     const modelsToTry = [
       { name: 'gemini-1.5-flash', version: 'v1beta' },
