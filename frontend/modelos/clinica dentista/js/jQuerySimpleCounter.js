@@ -1,0 +1,1 @@
+!function(i){i.fn.jQuerySimpleCounter=function(t){var n=i.extend({start:0,end:100,easing:"swing",duration:400,complete:""},t),e=i(this);i({count:n.start}).animate({count:n.end},{duration:n.duration,easing:n.easing,step:function(){var t=Math.ceil(this.count);e.text(t)},complete:n.complete})}}(jQuery);
